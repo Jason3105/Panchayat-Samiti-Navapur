@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Navapur Panchayat Samiti</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --primary-green: #2ecc71;
+            --secondary-green: #27ae60;
+            --light-background: #f0f4f0;
+            --text-color: #2c3e50;
+            --white: #ffffff;
+            --primary-green: #2e7d32;
+            --light-green: #4caf50;
+            --cream: #f5f5dc;
+            --light-cream: #fafaee;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Demo Page Styling */
+    #page-container {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--light-cream);
+        color: var(--text-dark);
+        min-height: 100vh;
+    }
+    
+    /* Chatbot Container */
+    #chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    /* Toggle Button */
+    #chat-toggle-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--primary-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 8px var(--shadow);
+        transition: transform 0.3s ease;
+    }
+    
+    #chat-toggle-btn:hover {
+        transform: scale(1.05);
+    }
+    
+    #chat-toggle-icon {
+        color: var(--white);
+        font-size: 24px;
+    }
+    
+    /* Chat Window */
+    #chat-window {
+        width: 350px;
+        height: 500px;
+        background-color: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px var(--shadow);
+        margin-bottom: 15px;
+        display: none;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
+    
+    #chat-window.active {
+        display: flex;
+    }
+    
+    /* Chat Header */
+    #chat-header {
+        background-color: var(--primary-green);
+        color: var(--white);
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    #chat-title {
+        font-weight: 600;
+        margin: 0;
+        font-size: 16px;
+    }
+    
+    #language-selector {
+        background-color: transparent;
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+        cursor: pointer;
+        outline: none;
+    }
+    
+    #language-selector option {
+        background-color: var(--white);
+        color: var(--text-dark);
+    }
+    
+    /* Chat Messages Area */
+    #chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background-color: var(--light-cream);
+    }
+    
+    .message {
+        margin-bottom: 12px;
+        max-width: 80%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        line-height: 1.4;
+        font-size: 14px;
+        position: relative;
+    }
+    
+    .user-message {
+        background-color: var(--light-green);
+        color: var(--white);
+        margin-left: auto;
+        border-bottom-right-radius: 2px;
+    }
+    
+    .bot-message {
+        background-color: var(--cream);
+        color: var(--text-dark);
+        margin-right: auto;
+        border-bottom-left-radius: 2px;
+    }
+    
+    .typing-indicator {
+        padding: 8px 16px;
+    }
+    
+    .typing-indicator span {
+        height: 4px;
+        width: 4px;
+        background-color: var(--text-light);
+        display: inline-block;
+        border-radius: 50%;
+        animation: typingAnimation 1.5s infinite ease-in-out;
+        margin: 0 2px;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes typingAnimation {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0); }
+    }
+    
+    /* Input Area */
+    #chat-input-container {
+        display: flex;
+        padding: 10px;
+        background-color: var(--white);
+        border-top: 1px solid var(--cream);
+    }
+    
+    #chat-input {
+        flex: 1;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        padding: 8px 15px;
+        outline: none;
+        font-size: 14px;
+    }
+    
+    #chat-input:focus {
+        border-color: var(--light-green);
+    }
+    
+    #send-button {
+        background-color: var(--primary-green);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        margin-left: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+    }
+    
+    #send-button:hover {
+        background-color: var(--light-green);
+    }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #FFFFFF;
+            top: 0 !important;
+          }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+          }
+          
+          a:hover {
+            text-decoration: underline;
+            color: #388E3C;
+          }
+
+    /* Header Styles */
+    header {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      
+      .top-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 0;
+      }
+      
+      .top-header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      .contact-info {
+        display: flex;
+        gap: 20px;
+      }
+      
+      .contact-info a {
+        color: white;
+      }
+      
+      .social-links {
+        display: flex;
+        gap: 15px;
+      }
+      
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      .logo img {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #4CAF50;
+      }
+      
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+      
+      nav ul li a {
+        color: #333333;
+        font-weight: 500;
+        padding: 10px 0;
+        position: relative;
+        text-decoration: none;
+      }
+
+      nav ul li a:hover {
+        color: #4CAF50;
+        text-decoration: none;
+      }
+      
+      nav ul li a:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #4CAF50;
+        transition: width 0.3s;
+      }
+      
+      nav ul li a:hover:after {
+        width: 100%;
+      }
+      
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #333333;
+      }
+
+      /* Google Translator Feature */
+      .translate-btn {
+        background-color: transparent;
+        border: none;
+        color: black;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+    
+    .translate-btn img {
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+    }
+    
+    /* Translator Modal */
+    .translator-modal {
+        display: none;
+        position: fixed;
+        top: 50px;
+        right: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 400px;
+        padding: 10px;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    .close-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+    }
+    
+    .language-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .language-option {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .language-option:hover {
+        background-color: #f9f9f9;
+    }
+    
+    .language-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .language-native {
+        color: #666;
+    }
+    
+    .active-language {
+        border: 2px solid #ff4500;
+        background-color: #fff8f6;
+    }
+    
+    /* Hide Google Translate widget */
+    .skiptranslate {
+        display: none !important;
+    }
+    
+    /* Hide Google Translate banner */
+    .goog-te-banner-frame {
+        display: none !important;
+    }
+        
+        /* Page Banner */
+        .page-banner {
+            background-color: #333;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/300');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .page-banner h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .page-banner p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+      
+      .btn {
+        display: inline-block;
+        background-color: var(--primary-color);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: background-color 0.3s;
+      }
+      
+      .btn:hover {
+        background-color: var(--secondary-color);
+        text-decoration: none;
+      }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            margin: 50px 0 30px;
+        }
+
+        .section-title h2 {
+            color: #4CAF50;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .section-title .underline {
+            width: 80px;
+            height: 4px;
+            background-color: #FFA500;
+            margin: 0 auto;
+        }
+
+        /* Gallery Styles */
+        .gallery-container {
+            margin: 40px 0 60px;
+        }
+
+        .gallery-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 2px solid #4CAF50;
+            border-radius: 30px;
+            padding: 8px 20px;
+            margin: 5px;
+            cursor: pointer;
+            color: #4CAF50;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            padding: 15px;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-item .overlay h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .gallery-item .overlay p {
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .lightbox-content {
+            position: relative;
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .lightbox-nav button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            padding: 10px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .lightbox-nav button:hover {
+            opacity: 1;
+        }
+
+     /* Footer */
+     footer {
+        background-color: #333333;
+        color: white;
+        padding: 50px 0 0;
+      }
+      
+      .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      .footer-section {
+        flex: 1 1 250px;
+      }
+      
+      .footer-section h3 {
+        color: #FF9800;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .footer-section p, 
+      .footer-section address {
+        margin-bottom: 15px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .footer-links {
+        list-style: none;
+      }
+      
+      .footer-links li {
+        margin-bottom: 10px;
+      }
+      
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 0.3s;
+      }
+      
+      .footer-links a:hover {
+        color: #FF9800;
+      }
+      
+      .contact-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .map-container {
+        height: 200px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      
+      .bottom-footer {
+        background-color: rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+      }
+
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+        .menu-toggle {
+          display: block;
+        }
+        
+        nav ul {
+          position: fixed;
+          left: -100%;
+          top: 70px;
+          flex-direction: column;
+          background-color: white;
+          width: 100%;
+          text-align: center;
+          align-items: center;
+          transition: 0.3s;
+          box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+          padding: 20px 0;
+          height: calc(100vh - 70px);
+          overflow-y: auto;
+        }
+        
+        nav ul.active {
+          left: 0;
+        }
+        
+        .contact-info {
+          flex-direction: column;
+          gap: 5px;
+        }
+        
+        .hero h1 {
+          font-size: 2rem;
+        }
+        
+        .hero p {
+          font-size: 1rem;
+        }
+        
+        .stat-number {
+          font-size: 2rem;
+        }
+        
+        .about-container,
+        .team-container,
+        .events-container {
+          gap: 20px;
+        }
+      }
+        
+      .event-card {
+        width: 100%;
+        height: 100%;
+        background-color: var(--white);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+
+    .event-card:hover {
+        transform: scale(1.05);
+    }
+
+    .event-card img {
+        width: 100%;
+        height: 100%;
+        object-fit:cover;
+    }
+
+    .event-details {
+        padding: 15px;
+    }
+
+    .event-details h3 {
+        color: var(--primary-green);
+        margin-bottom: 10px;
+    }
+
+    .event-details p {
+        color: var(--text-color);
+    }
+
+    /* Event Details Modal */
+    .event-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.8);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 2rem;
+    }
+
+    .modal-content {
+        background-color: var(--white);
+        max-width: 900px;
+        margin: 0 auto;
+        border-radius: 10px;
+        padding: 2rem;
+        position: relative;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 2rem;
+        cursor: pointer;
+        color: var(--primary-green);
+    }
+
+    .event-slider {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 1rem 0;
+    }
+
+    .event-slider img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+        }
+
+        .navbar-menu {
+            margin-top: 1rem;
+        }
+
+        .gallery-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .event-card {
+            width: 100%;
+        }
+    }
+      
+        </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="nav-container">
+          <div class="logo">
+            <img src="/api/placeholder/50/50" alt="Navapur Panchayat Logo">
+            <div class="logo-text">Navapur Panchayat Samiti</div>
+          </div>
+          
+          <button class="menu-toggle" aria-label="Toggle menu">
+            ☰
+          </button>
+          
+          <nav>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="schemes.html">Schemes</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="team.html">Our Team</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+              <li><a href="contact.html">Contact Us</a></li>
+              <li>
+                <button id="translate-button" class="translate-btn">
+                  <img src="https://cdn-icons-png.flaticon.com/512/484/484633.png" alt="Translate">
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+          <!-- Translator Modal -->
+    <div id="translator-modal" class="translator-modal">
+        <div class="modal-header">
+            <button id="close-modal" class="close-btn">×</button>
+        </div>
+        <div class="language-grid" id="language-grid">
+            <!-- Language options will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+          <!-- Translator Modal -->
+          <div id="translator-modal" class="translator-modal">
+            <div class="modal-header">
+                <button id="close-modal" class="close-btn">×</button>
+            </div>
+            <div class="language-grid" id="language-grid">
+                <!-- Language options will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+    <!-- Page Banner -->
+    <section class="page-banner">
+        <div class="container">
+            <h2>Navapur Panchayat Photo Gallery</h2>
+            <p>A visual journey through our initiatives, events, and community activities that are transforming rural lives.</p>
+        </div>
+        <br>
+        <div class="breadcrumb">
+            <a href="index.html" style="color: orange;">Home</a> &gt; <span>Gallery</span>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-container">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Gallery</h2>
+                <div class="underline"></div>
+            </div>
+
+            <div class="gallery-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="health">Health Camps</button>
+                <button class="filter-btn" data-filter="agriculture">Agriculture</button>
+                <button class="filter-btn" data-filter="women">Women Empowerment</button>
+                <button class="filter-btn" data-filter="education">Education</button>
+                <button class="filter-btn" data-filter="water">Water Supply</button>
+            </div>
+
+            <div class="gallery-grid">
+                <!-- Health Camp Images -->
+                <div class="gallery-item" data-category="health">
+                <!-- Event 1 -->
+                <div class="event-card" onclick="openEventModal('event1')">
+                    <img src="./Images/hcc.jpg" alt="Rural Development Workshop">
+                    <div class="overlay">
+                        <h3>Rural Development Workshop</h3>
+                        <p>January 22, 2025</p>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Agriculture Images -->
+                <div class="gallery-item" data-category="agriculture">
+                    <!-- Event 4 -->
+                    <div class="event-card" onclick="openEventModal('event4')">
+                        <img src="./Images/fw.jpg" alt="Agricultural Farmers Program">
+                        <div class="overlay">
+                            <h3>Agricultural Farmers Program</h3>
+                            <p>January 25, 2025</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="agriculture">
+                    <!-- Event 5 -->
+                    <div class="event-card" onclick="openEventModal('event5')">
+                        <img src="./Images/ofd.jpg" alt="Organic Farming Demonstartion">
+                        <div class="overlay">
+                            <h3>Organic Farming Demonstartion</h3>
+                            <p>June 26, 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Women Empowerment Images -->
+                <div class="gallery-item" data-category="women">
+                    <!-- Event 6 -->
+                    <div class="event-card" onclick="openEventModal('event6')">
+                        <img src="./Images/wep.jpg" alt="Women Empowerment Program">
+                        <div class="overlay">
+                            <h3>Women Empowerment Program</h3>
+                            <p>November 11, 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Education Images -->
+                <div class="gallery-item" data-category="education">
+                    <!-- Event 7 -->
+                    <div class="event-card" onclick="openEventModal('event7')">
+                        <img src="./Images/ed.jpg" alt="Equal Education to All">
+                        <div class="overlay">
+                            <h3>Equal Education to All</h3>
+                            <p>June 16, 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Water Supply Images -->
+                <div class="gallery-item" data-category="water">
+                    <!-- Event 8 -->
+                    <div class="event-card" onclick="openEventModal('event8')">
+                        <img src="./Images/wca.jpg" alt="Water Conservation Awareness">
+                        <div class="overlay">
+                            <h3>Water Conservation Awareness</h3>
+                            <p>March 25, 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="water">
+                    <!-- Event 9 -->
+                    <div class="event-card" onclick="openEventModal('event9')">
+                        <img src="./Images/rwa.png" alt="Rain Water Harvesting">
+                        <div class="overlay">
+                            <h3>Rain Water Harvesting</h3>
+                            <p>July 12, 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="water">
+                    <!-- Event 10 -->
+                    <div class="event-card" onclick="openEventModal('event10')">
+                        <img src="./Images/sw.jpg" alt="Save Water">
+                        <div class="overlay">
+                            <h3>Save Water</h3>
+                            <p>March 25, 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Event Modal -->
+        <div id="eventModal" class="event-modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeEventModal()">&times;</span>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDescription"></p>
+                <div class="event-slider" id="eventSlider"></div>
+            </div>
+        </div>
+
+    <!-- Lightbox
+    <div class="lightbox">
+        <div class="lightbox-content">
+            <img src="" alt="Enlarged Image">
+            <div class="lightbox-caption"></div>
+        </div>
+        <div class="lightbox-nav">
+            <button class="prev-btn">❮</button>
+            <button class="next-btn">❯</button>
+        </div>
+        <span class="close-lightbox">×</span>
+    </div> -->
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-container">
+        <!-- Chat Window -->
+        <div id="chat-window">
+            <div id="chat-header">
+                <h3 id="chat-title">Panchayat Samiti AI Assistant</h3>
+                <select id="language-selector" class="language-select">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="mr">मराठी</option>
+                    <option value="gu">ગુજરાતી</option>
+                </select>
+            </div>
+            <div id="chat-messages" class="messages"></div>
+            <div id="chat-input-container">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Type your message...">
+                <button id="send-button" class="send-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chat Toggle Button -->
+        <div id="chat-toggle-btn">
+            <div id="chat-toggle-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+         <!-- Footer -->
+         <footer>
+            <div class="footer-container">
+              <div class="footer-section">
+                <h3>About Us</h3>
+                <p>Navapur Panchayat Samiti is dedicated to the development and welfare of rural communities through effective implementation of government schemes and services.</p>
+              </div>
+              
+              <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                  <li><a href="index.html">Home</a></li>
+                  <li><a href="schemes.html">Schemes</a></li>
+                  <li><a href="services.html">Services</a></li>
+                  <li><a href="about.html">About Us</a></li>
+                  <li><a href="team.html">Our Team</a></li>
+                  <li><a href="#">Gallery</a></li>
+                  <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+              </div>
+              
+              <div class="footer-section">
+                <h3>Contact Information</h3>
+                <div class="contact-details">
+                  <div class="contact-item">
+                    <span>📍</span>
+                    <address>Panchayat Samiti Office, Main Road, Navapur - 425418, Maharashtra</address>
+                  </div>
+                  <div class="contact-item">
+                    <span>📞</span>
+                    <a href="tel:+919876543210">+91 9876543210</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>✉️</span>
+                    <a href="mailto:info@navapurpanchayat.gov.in">info@navapurpanchayat.gov.in</a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="footer-section">
+                <h3>Find Us</h3>
+                <div class="map-container">
+                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119981.57869774485!2d73.6804752!3d20.9526215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddeeda3d8b13af%3A0x41fcace065976cd0!2sNavapur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1616501323220!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bottom-footer">
+              <p>&copy; 2025 Navapur Panchayat Samiti. All Rights Reserved.</p>
+            </div>
+          </footer>
+        
+
+    <script>
+         // Gemini API Configuration
+         const GEMINI_API_KEY = 'AIzaSyAj9NCp0-9909MPLfds93gsO_gANOITjQQ';
+         const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+ 
+         // DOM Elements
+         const chatToggleBtn = document.getElementById('chat-toggle-btn');
+         const chatWindow = document.getElementById('chat-window');
+         const chatInput = document.getElementById('chat-input');
+         const sendButton = document.getElementById('send-button');
+         const messagesContainer = document.getElementById('chat-messages');
+         const languageSelect = document.getElementById('language-selector');
+ 
+         // Medical context prompt to ensure responses stay within domain
+         const PANCHAYAT_CONTEXT = `You are Panchayat Samiti of Navapur AI, an AI assistant designed to provide general information of the panchayat Samiti and government schemes and info of the services provided in multiple Indian languages. 
+         Follow these guidelines:
+         - Provide helpful, accurate information based on knowledge available
+         - DO NOT answer questions that are irrelevant - politely redirect to relevant topics
+         - When uncertain, acknowledge limitations and suggest consultation with official sources that is people working in the panchayat office`;
+ 
+         // Active language (default: English)
+         let activeLanguage = 'en';
+ 
+         // Initialize the chat
+         function initChat() {
+             // Toggle chat window visibility
+             chatToggleBtn.addEventListener('click', () => {
+                 chatWindow.classList.toggle('active');
+                 if (chatWindow.classList.contains('active')) {
+                     chatInput.focus();
+                     // If this is first open, show welcome message
+                     if (messagesContainer.childElementCount === 0) {
+                         addBotMessage("Welcome to Panchayat Samiti of Navapur AI assistant. How can I help you today?");
+                     }
+                 }
+             });
+ 
+             // Language selection event
+             languageSelect.addEventListener('change', (e) => {
+                 activeLanguage = e.target.value;
+                 // Add a system message about language change
+                 addBotMessage(`I've switched to ${getLanguageName(activeLanguage)}. How can I help you?`);
+             });
+ 
+             // Send message events
+             sendButton.addEventListener('click', handleSendMessage);
+             chatInput.addEventListener('keypress', (e) => {
+                 if (e.key === 'Enter') {
+                     handleSendMessage();
+                 }
+             });
+         }
+ 
+         // Maps language codes to full names
+         function getLanguageName(code) {
+             const languages = {
+                 'en': 'English'
+             };
+             return languages[code] || 'English';
+         }
+ 
+         // Handle sending a message
+         function handleSendMessage() {
+             const message = chatInput.value.trim();
+             if (message.length === 0) return;
+             
+             // Add user message to chat
+             addUserMessage(message);
+             
+             // Clear input field
+             chatInput.value = '';
+             
+             // Show typing indicator
+             showTypingIndicator();
+             
+             // Get response from AI
+             getAIResponse(message);
+         }
+ 
+         // Add a user message to the chat
+         function addUserMessage(message) {
+             const messageElement = document.createElement('div');
+             messageElement.classList.add('message', 'user-message');
+             messageElement.textContent = message;
+             messagesContainer.appendChild(messageElement);
+             scrollToBottom();
+         }
+ 
+         // Add a bot message to the chat
+         function addBotMessage(message) {
+             const messageElement = document.createElement('div');
+             messageElement.classList.add('message', 'bot-message');
+             messageElement.textContent = message;
+             messagesContainer.appendChild(messageElement);
+             scrollToBottom();
+         }
+ 
+         // Show typing indicator
+         function showTypingIndicator() {
+             const typingElement = document.createElement('div');
+             typingElement.classList.add('message', 'bot-message', 'typing-indicator');
+             typingElement.innerHTML = '<span></span><span></span><span></span>';
+             typingElement.id = 'typing-indicator';
+             messagesContainer.appendChild(typingElement);
+             scrollToBottom();
+         }
+ 
+         // Remove typing indicator
+         function removeTypingIndicator() {
+             const typingElement = document.getElementById('typing-indicator');
+             if (typingElement) {
+                 typingElement.remove();
+             }
+         }
+ 
+         // Scroll chat to bottom
+         function scrollToBottom() {
+             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+         }
+ 
+         // Get AI response from Gemini API
+         async function getAIResponse(userMessage) {
+             try {
+                 // Create prompt based on active language
+                 let languageInstruction = '';
+                 if (activeLanguage !== 'en') {
+                     languageInstruction = `Please respond in ${getLanguageName(activeLanguage)}.`;
+                 }
+ 
+                 const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({
+                         contents: [{
+                             parts: [{
+                                 text: `${PANCHAYAT_CONTEXT}\n\n${languageInstruction}\n\nUser query: ${userMessage}`
+                             }]
+                         }]
+                     })
+                 });
+ 
+                 const data = await response.json();
+                 
+                 // Remove typing indicator
+                 removeTypingIndicator();
+                 
+                 if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                     const aiResponse = data.candidates[0].content.parts[0].text;
+                     addBotMessage(aiResponse);
+                 } else {
+                     // Handle API error
+                     addBotMessage("I'm having trouble connecting right now. Please try again later.");
+                     console.error("API Response Error:", data);
+                 }
+             } catch (error) {
+                 // Remove typing indicator
+                 removeTypingIndicator();
+                 
+                 // Handle error
+                 addBotMessage("I'm having trouble connecting right now. Please try again later.");
+                 console.error("API Error:", error);
+             }
+         }
+ 
+         // Initialize chat when DOM is loaded
+         document.addEventListener('DOMContentLoaded', initChat);
+
+                // Google Translate Widget
+    // List of supported languages with correct Google Translate language codes
+    const languages = [
+    { code: 'en', name: 'English', native: 'English' },
+    { code: 'mr', name: 'Marathi', native: 'मराठी' },
+    { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+    { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+    { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+    { code: 'te', name: 'Telugu', native: 'తెలుగు' },
+      { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
+      { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+    ];
+    
+    // DOM elements
+    const translateButton = document.getElementById('translate-button');
+    const translatorModal = document.getElementById('translator-modal');
+    const closeModal = document.getElementById('close-modal');
+    const languageGrid = document.getElementById('language-grid');
+    
+    // Function to initialize Google Translate
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        autoDisplay: false,
+        includedLanguages: languages.map(lang => lang.code).join(',')
+    }, 'google_translate_element');
+    }
+    
+    // Function to load Google Translate script
+    function loadGoogleTranslateScript() {
+    if (!document.getElementById('google-translate-script')) {
+        const script = document.createElement('script');
+        script.id = 'google-translate-script';
+        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        document.body.appendChild(script);
+    }
+    }
+    
+    // Load Google Translate script when page loads
+    document.addEventListener('DOMContentLoaded', loadGoogleTranslateScript);
+    
+    // Function to populate language grid
+    function populateLanguageGrid() {
+    languageGrid.innerHTML = '';
+    
+    const currentLang = getCurrentLanguage() || 'en';
+    
+    languages.forEach(lang => {
+        const isActive = lang.code === currentLang;
+        
+        const langElement = document.createElement('div');
+        langElement.className = `language-option ${isActive ? 'active-language' : ''}`;
+        langElement.setAttribute('data-lang', lang.code);
+        
+        langElement.innerHTML = `
+            <div class="language-name">${lang.name}</div>
+            <div class="language-native">${lang.native}</div>
+        `;
+        
+        langElement.addEventListener('click', () => {
+            changeLanguage(lang.code);
+            closeTranslatorModal();
+        });
+        
+        languageGrid.appendChild(langElement);
+    });
+    }
+    
+    // Function to get current language from Google Translate cookie
+    function getCurrentLanguage() {
+    const match = document.cookie.match(/(^|;)\s*googtrans=([^;]+)/);
+    if (match) {
+        return match[2].split('/')[2];
+    }
+    return localStorage.getItem('selectedLanguage') || null;
+    }
+    
+    // Function to change language
+    function changeLanguage(langCode) {
+    const currentLang = getCurrentLanguage();
+    
+    // If selected language is the same as current language, do nothing
+    if (currentLang === langCode) return;
+    
+    // Store selected language in localStorage
+    localStorage.setItem('selectedLanguage', langCode);
+    
+    // Set the Google Translate cookie for current domain
+    const hostname = window.location.hostname;
+    let cookieDomain = hostname;
+    
+    // If on localhost, domain should be empty
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        cookieDomain = '';
+    }
+    
+    // Set cookies for Google Translate
+    document.cookie = `googtrans=/en/${langCode}; domain=${cookieDomain}; path=/`;
+    document.cookie = `googtrans=/en/${langCode}; path=/`;
+    
+    // Refresh Google Translate widget without unnecessary reloads
+    const translateElement = document.querySelector('.goog-te-combo');
+    if (translateElement) {
+        translateElement.value = langCode;
+        translateElement.dispatchEvent(new Event('change'));
+    }
+    
+    // Only reload if translation was not applied via the dropdown
+    if (!translateElement) {
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    }
+    }
+    
+    // Function to open translator modal
+    function openTranslatorModal() {
+    populateLanguageGrid();
+    translatorModal.style.display = 'block';
+    }
+    
+    // Function to close translator modal
+    function closeTranslatorModal() {
+    translatorModal.style.display = 'none';
+    }
+    
+    // Event listeners
+    translateButton.addEventListener('click', openTranslatorModal);
+    closeModal.addEventListener('click', closeTranslatorModal);
+    
+    // Close modal if clicked outside
+    window.addEventListener('click', (event) => {
+    if (event.target === translatorModal) {
+        closeTranslatorModal();
+    }
+    });
+    
+    // Apply saved language preference when page loads
+    window.addEventListener('load', () => {
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    const currentLang = getCurrentLanguage();
+    
+    // Only change language if it's different from the saved one
+    if (savedLanguage && savedLanguage !== 'en' && savedLanguage !== currentLang) {
+        setTimeout(() => {
+            changeLanguage(savedLanguage);
+        }, 1000);
+    }
+    });
+
+    // Event data
+    const events = {
+        event1: {
+            title: 'Rural Development Workshop',
+            description: 'A comprehensive workshop focusing on rural development strategies and community empowerment initiatives. Participants learned about sustainable agricultural practices, rural infrastructure development, and community-driven progress.',
+            images: [
+                './Images/hcc.jpg',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event2: {
+            title: 'Community Health Camp',
+            description: 'Free health check-ups and medical awareness program conducted for local community members. Providing essential healthcare services and health education to improve overall community well-being.',
+            images: [
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event3: {
+            title: 'Agricultural Awareness Program',
+            description: 'An intensive program to educate farmers about modern, sustainable agricultural techniques, crop management, and innovative farming methods to improve agricultural productivity and income.',
+            images: [
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event4: {
+            title: 'Agricultural Farmers Program',
+            description: 'An intensive program to educate farmers about modern, sustainable agricultural techniques, crop management, and innovative farming methods to improve agricultural productivity and income.',
+            images: [
+                './Images/fw.jpg',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event5: {
+            title: 'Organic Farming Demonstartion',
+            description: 'An engaging and informative demonstration highlighting the principles and practices of organic farming, focusing on sustainable, chemical-free methods to promote healthy soil and eco-friendly crop production.',
+            images: [
+                './Images/ofd.jpg',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event6: {
+            title: 'Women Empowerment Program',
+            description: 'A transformative program aimed at uplifting women through skill development, awareness, and opportunities for social and economic independence.',
+            images: [
+                './Images/wep.jpg',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event7: {
+            title: 'Equal Education to All',
+            description: 'A mission-driven initiative focused on providing accessible, inclusive, and quality education to individuals from all sections of society.',
+            images: [
+                './Images/ed.jpg',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event8: {
+            title: 'Water Conservation Awareness',
+            description: 'An awareness initiative promoting the importance of saving water and adopting sustainable practices for a better future.',
+            images: [
+                './Images/wca.jpg',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event9: {
+            title: 'Rain Water Harvesting',
+            description: 'A sustainable technique of collecting and storing rainwater for reuse, aimed at conserving water and replenishing groundwater levels.',
+            images: [
+                './Images/rwa.png',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        },
+        event10: {
+            title: 'Save Water',
+            description: 'A vital call to action encouraging responsible water use to preserve this precious resource for future generations.',
+            images: [
+                './Images/sw.jpg',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250',
+                '/api/placeholder/250/250'
+            ]
+        }
+    };
+
+    function openEventModal(eventKey) {
+        const modal = document.getElementById('eventModal');
+        const titleElement = document.getElementById('modalTitle');
+        const descriptionElement = document.getElementById('modalDescription');
+        const sliderElement = document.getElementById('eventSlider');
+
+        const event = events[eventKey];
+
+        // Set title and description
+        titleElement.textContent = event.title;
+        descriptionElement.textContent = event.description;
+
+        // Clear previous images
+        sliderElement.innerHTML = '';
+
+        // Add images to slider
+        event.images.forEach(imageSrc => {
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.alt = event.title;
+            sliderElement.appendChild(img);
+        });
+
+        // Show modal
+        modal.style.display = 'block';
+    }
+
+    function closeEventModal() {
+        const modal = document.getElementById('eventModal');
+        modal.style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('eventModal');
+        if (event.target === modal) {
+            closeEventModal();
+        }
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('nav ul');
+    
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('nav') && !e.target.closest('.menu-toggle')) {
+        navMenu.classList.remove('active');
+      }
+    });
+
+        // Gallery Filtering
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                const filterValue = this.getAttribute('data-filter');
+
+                galleryItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Lightbox Functionality
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const lightboxCaption = lightbox.querySelector('.lightbox-caption');
+        const closeLightbox = lightbox.querySelector('.close-lightbox');
+        const prevBtn = lightbox.querySelector('.prev-btn');
+        const nextBtn = lightbox.querySelector('.next-btn');
+        let currentIndex = 0;
+        let visibleItems = [];
+
+        // Open lightbox
+        galleryItems.forEach((item, index) => {
+            item.addEventListener('click', function() {
+                // Get currently visible items based on active filter
+                visibleItems = Array.from(galleryItems).filter(item => {
+                    return window.getComputedStyle(item).display !== 'none';
+                });
+                
+                currentIndex = visibleItems.indexOf(this);
+                
+                const imgSrc = this.querySelector('img').src;
+                const caption = this.querySelector('.overlay h3').textContent;
+                const date = this.querySelector('.overlay p').textContent;
+                
+                lightboxImg.src = imgSrc;
+                lightboxCaption.textContent = caption + ' - ' + date;
+                
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close lightbox
+        closeLightbox.addEventListener('click', function() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close lightbox when clicking outside the image
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Navigate through images
+        prevBtn.addEventListener('click', function() {
+            currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+            updateLightboxContent();
+        });
+
+        nextBtn.addEventListener('click', function() {
+            currentIndex = (currentIndex + 1) % visibleItems.length;
+            updateLightboxContent();
+        });
+
+        // Update lightbox content
+        function updateLightboxContent() {
+            const currentItem = visibleItems[currentIndex];
+            const imgSrc = currentItem.querySelector('img').src;
+            const caption = currentItem.querySelector('.overlay h3').textContent;
+            const date = currentItem.querySelector('.overlay p').textContent;
+            
+            lightboxImg.src = imgSrc;
+            lightboxCaption.textContent = caption + ' - ' + date;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (!lightbox.classList.contains('active')) return;
+            
+            if (e.key === 'ArrowLeft') {
+                prevBtn.click();
+            } else if (e.key === 'ArrowRight') {
+                nextBtn.click();
+            } else if (e.key === 'Escape') {
+                closeLightbox.click();
+            }
+        });
+    </script>
+</body>
+</html>

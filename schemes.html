@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schemes | Navapur Panchayat Samiti</title>
+    <style>
+        :root {
+            --primary-green: #2e7d32;
+            --light-green: #4caf50;
+            --cream: #f5f5dc;
+            --light-cream: #fafaee;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Demo Page Styling */
+        #page-container {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-cream);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+        
+        /* Chatbot Container */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        /* Toggle Button */
+        #chat-toggle-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        #chat-toggle-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        #chat-toggle-icon {
+            color: var(--white);
+            font-size: 24px;
+        }
+        
+        /* Chat Window */
+        #chat-window {
+            width: 350px;
+            height: 500px;
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-bottom: 15px;
+            display: none;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        #chat-window.active {
+            display: flex;
+        }
+        
+        /* Chat Header */
+        #chat-header {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #chat-title {
+            font-weight: 600;
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        #language-selector {
+            background-color: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
+        }
+        
+        #language-selector option {
+            background-color: var(--white);
+            color: var(--text-dark);
+        }
+        
+        /* Chat Messages Area */
+        #chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: var(--light-cream);
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            max-width: 80%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            line-height: 1.4;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .user-message {
+            background-color: var(--light-green);
+            color: var(--white);
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        
+        .bot-message {
+            background-color: var(--cream);
+            color: var(--text-dark);
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+        
+        .typing-indicator {
+            padding: 8px 16px;
+        }
+        
+        .typing-indicator span {
+            height: 4px;
+            width: 4px;
+            background-color: var(--text-light);
+            display: inline-block;
+            border-radius: 50%;
+            animation: typingAnimation 1.5s infinite ease-in-out;
+            margin: 0 2px;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        
+        /* Input Area */
+        #chat-input-container {
+            display: flex;
+            padding: 10px;
+            background-color: var(--white);
+            border-top: 1px solid var(--cream);
+        }
+        
+        #chat-input {
+            flex: 1;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 8px 15px;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        #chat-input:focus {
+            border-color: var(--light-green);
+        }
+        
+        #send-button {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        #send-button:hover {
+            background-color: var(--light-green);
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #FFFFFF;
+            top: 0 !important;
+          }
+
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #4CAF50;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn:hover {
+            background-color: #4CAF50;
+        }
+        
+    /* Header Styles */
+    header {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      
+      .top-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 0;
+      }
+      
+      .top-header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      .contact-info {
+        display: flex;
+        gap: 20px;
+      }
+      
+      .contact-info a {
+        color: white;
+      }
+      
+      .social-links {
+        display: flex;
+        gap: 15px;
+      }
+      
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      .logo img {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #4CAF50;
+      }
+      
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+      
+      nav ul li a {
+        color: #333333;
+        font-weight: 500;
+        padding: 10px 0;
+        position: relative;
+      }
+
+      nav ul li a:hover {
+        color: #4CAF50;
+        text-decoration: none;
+      }
+      
+      nav ul li a:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #4CAF50;
+        transition: width 0.3s;
+      }
+      
+      nav ul li a:hover:after {
+        width: 100%;
+      }
+      
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #333333;
+      }
+
+      /* Google Translator Feature */
+      .translate-btn {
+        background-color: transparent;
+        border: none;
+        color: black;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+    
+    .translate-btn img {
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+    }
+    
+    /* Translator Modal */
+    .translator-modal {
+        display: none;
+        position: fixed;
+        top: 50px;
+        right: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 400px;
+        padding: 10px;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    .close-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+    }
+    
+    .language-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .language-option {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .language-option:hover {
+        background-color: #f9f9f9;
+    }
+    
+    .language-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .language-native {
+        color: #666;
+    }
+    
+    .active-language {
+        border: 2px solid #ff4500;
+        background-color: #fff8f6;
+    }
+    
+    /* Hide Google Translate widget */
+    .skiptranslate {
+        display: none !important;
+    }
+    
+    /* Hide Google Translate banner */
+    .goog-te-banner-frame {
+        display: none !important;
+    }
+        
+        /* Page Banner */
+        .page-banner {
+            background-color: #333;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/300');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .page-banner h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .page-banner p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        /* Schemes Section */
+        .schemes-section {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+          }
+          
+          .section-title h2 {
+            font-size: 2rem;
+            color: #4CAF50;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+          }
+          
+          .section-title h2:after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: #FF9800;
+            bottom: 0;
+            left: 25%;
+          }
+        
+        .schemes-filter {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .filter-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            margin: 0 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        
+        .schemes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .scheme-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .scheme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scheme-card-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .scheme-card-content {
+            padding: 20px;
+        }
+        
+        .scheme-card h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .scheme-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .scheme-details {
+            margin-top: 15px;
+        }
+        
+        .scheme-detail {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .scheme-detail strong {
+            width: 120px;
+            color: #555;
+        }
+        
+        .scheme-card .btn {
+            margin-top: 15px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Scheme Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .modal-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-header h3 {
+            color: #4CAF50;
+            font-size: 1.8rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+          
+        .breadcrumb a {
+            color: #FF9800;
+        }
+        
+        .modal-body {
+            margin-bottom: 25px;
+        }
+        
+        .modal-section {
+            margin-bottom: 20px;
+        }
+        
+        .modal-section h4 {
+            color: #444;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .modal-footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .doc-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .doc-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .doc-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .modal-footer .btn {
+            margin: 0 10px;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        .faq-question {
+            padding: 18px 20px;
+            cursor: pointer;
+            position: relative;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: #4CAF50;
+        }
+        
+        .faq-item.active .faq-question::after {
+            content: '-';
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 20px 20px;
+            max-height: 500px;
+        }
+        
+        /* Application Process Section */
+        .process-section {
+            padding: 60px 0;
+            background-color: #F1F8E9;
+        }
+        
+        .process-container {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .process-line {
+            position: absolute;
+            width: 3px;
+            background-color: #e0e0e0;
+            top: 50px;
+            bottom: 50px;
+            left: 24px;
+            z-index: 1;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step:last-child {
+            margin-bottom: 0;
+        }
+        
+        .step-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            margin-left: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+        }
+        
+        .step-content h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        /* Help Section */
+        .help-section {
+            padding: 40px 0;
+            background-color: #eaf7ea;
+            text-align: center;
+        }
+        
+        .help-section p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+    /* Footer */
+    footer {
+        background-color: #333333;
+        color: white;
+        padding: 50px 0 0;
+      }
+      
+      .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      .footer-section {
+        flex: 1 1 250px;
+      }
+      
+      .footer-section h3 {
+        color: #FF9800;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .footer-section p, 
+      .footer-section address {
+        margin-bottom: 15px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .footer-links {
+        list-style: none;
+      }
+      
+      .footer-links li {
+        margin-bottom: 10px;
+      }
+      
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 0.3s;
+      }
+      
+      .footer-links a:hover {
+        color: #FF9800;
+      }
+      
+      .contact-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .map-container {
+        height: 200px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      
+      .bottom-footer {
+        background-color: rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+      }
+        
+        
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      
+      nav ul {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: white;
+        width: 100%;
+        text-align: center;
+        align-items: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+        height: calc(100vh - 70px);
+        overflow-y: auto;
+      }
+      
+      nav ul.active {
+        left: 0;
+      }
+      
+      .contact-info {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .stat-number {
+        font-size: 2rem;
+      }
+      
+      .about-container,
+      .team-container,
+      .events-container {
+        gap: 20px;
+      }
+    }
+        
+
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="nav-container">
+          <div class="logo">
+            <img src="/api/placeholder/50/50" alt="Navapur Panchayat Logo">
+            <div class="logo-text">Navapur Panchayat Samiti</div>
+          </div>
+          
+          <button class="menu-toggle" aria-label="Toggle menu">
+            ☰
+          </button>
+          
+          <nav>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="schemes.html">Schemes</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="team.html">Our Team</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+              <li><a href="contact.html">Contact Us</a></li>
+              <li>
+                <button id="translate-button" class="translate-btn">
+                  <img src="https://cdn-icons-png.flaticon.com/512/484/484633.png" alt="Translate">
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+          <!-- Translator Modal -->
+    <div id="translator-modal" class="translator-modal">
+        <div class="modal-header">
+            <button id="close-modal" class="close-btn">×</button>
+        </div>
+        <div class="language-grid" id="language-grid">
+            <!-- Language options will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Page Banner -->
+    <section class="page-banner">
+        <div class="container">
+            <h2>Government Schemes</h2>
+            <p>Explore various welfare schemes provided by Navapur Panchayat Samiti to enhance rural development and improve quality of life for all citizens</p>
+        </div>
+        <br>
+        <div class="breadcrumb">
+            <a href="index.html" style="color: orange;">Home</a> &gt; <span>Schemes</span>
+        </div>
+    </section>
+
+    <!-- Schemes Section -->
+    <section class="schemes-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Available Schemes</h2>
+            </div>
+            
+            <div class="schemes-filter">
+                <button class="filter-btn active" data-filter="all">All Schemes</button>
+                <button class="filter-btn" data-filter="agriculture">Agriculture</button>
+                <button class="filter-btn" data-filter="housing">Housing</button>
+                <button class="filter-btn" data-filter="education">Education</button>
+                <button class="filter-btn" data-filter="health">Health</button>
+                <button class="filter-btn" data-filter="women">Women & Child</button>
+                <button class="filter-btn" data-filter="employment">Employment</button>
+            </div>
+            
+            <div class="schemes-container">
+                <!-- Agriculture Schemes -->
+                <div class="scheme-card" data-category="agriculture">
+                    <div class="scheme-card-img" style="background-image: url('./Images/pmksy.jpg')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Pradhan Mantri Krishi Sinchai Yojana</h3>
+                        <p>Irrigation support scheme for farmers to improve water usage efficiency</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>Small and marginal farmers</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Subsidy for micro-irrigation</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="pmksy">View Details</button>
+                    </div>
+                </div>
+                
+                <div class="scheme-card" data-category="agriculture">
+                    <div class="scheme-card-img" style="background-image: url('./Images/shcs.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Soil Health Card Scheme</h3>
+                        <p>Provides soil health assessment and recommendations for farmers</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>All farmers</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Free soil testing and advice</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="shc">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Housing Schemes -->
+                <div class="scheme-card" data-category="housing">
+                    <div class="scheme-card-img" style="background-image: url('./Images/pmay.jpg')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Pradhan Mantri Awaas Yojana - Gramin</h3>
+                        <p>Provides financial assistance for affordable housing to economically weaker sections.</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>BPL families without house</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Financial assistance to build house</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="pmay">View Details</button>
+                    </div>
+                </div>
+
+                <div class="scheme-card" data-category="housing">
+                    <div class="scheme-card-img" style="background-image: url('./Images/ray.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Ramai Awaas Yojana</h3>
+                        <p>Provides financial assistance for housing to Scheduled Caste (SC) and Neo-Buddhist families in Maharashtra.</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>BPL SC and Neo-Buddhist families without a home</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Monetary Benefits as per area of residence</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="ray">View Details</button>
+                    </div>
+                </div>
+
+                <div class="scheme-card" data-category="housing">
+                    <div class="scheme-card-img" style="background-image: url('./Images/say.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Shabari Awaas Yojana</h3>
+                        <p>Provides financial assistance for housing to Scheduled Tribe (ST) families in Maharashtra.</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>BPL ST families in Maharashtra who do not own a pucca house.</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Financial assistance to build house</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="say">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Education Schemes -->
+                <div class="scheme-card" data-category="education">
+                    <div class="scheme-card-img" style="background-image: url('./Images/sns.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>School Nutrition Scheme</h3>
+                        <p>Provides nutritious cooked meals to students in government and government-aided schools to improve education and health.</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>All students from Grades 1 to 8 in government schools.</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Free nutritious cooked meals.</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="sns">View Details</button>
+                    </div>
+                </div>
+
+                <div class="scheme-card" data-category="education">
+                    <div class="scheme-card-img" style="background-image: url('./Images/aas.jpeg')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Attendance Allowance Scheme</h3>
+                        <p>The Attendance Allowance Scheme provides a monthly financial incentive to students maintaining 75% or higher attendance in government schools.</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>Students with 75% or higher monthly attendance.</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Monthly allowance (₹100–₹300 depending on class level).</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="aas">View Details</button>
+                    </div>
+                </div>
+
+                <div class="scheme-card" data-category="education">
+                    <div class="scheme-card-img" style="background-image: url('./Images/fts.jpg')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Free Textbook Scheme</h3>
+                        <p>Easy access to learning materials without any application process.</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>All students from Class 1 to 8 in government, semi-government, and private-aided schools.</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Free textbooks for students, ensuring access to learning materials and reducing financial burden.</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="fts">View Details</button>
+                    </div>
+                </div>
+
+                <div class="scheme-card" data-category="education">
+                    <div class="scheme-card-img" style="background-image: url('./Images/fus.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Free Uniform Scheme</h3>
+                        <p>The Free Uniform Scheme provides free school uniforms to support education and reduce financial burden.</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>All students from Class 1 to 8 in government, semi-government, and private-aided schools.</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Free textbooks for students, ensuring access to learning materials and reducing financial burden.</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="fus">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Health Schemes -->
+                <div class="scheme-card" data-category="health">
+                    <div class="scheme-card-img" style="background-image: url('./Images/aby.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Ayushman Bharat Yojana</h3>
+                        <p>Health insurance scheme providing coverage up to ₹5 lakh per family</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>Low-income families</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Free healthcare services</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="aby">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Women & Child Schemes -->
+                <div class="scheme-card" data-category="women">
+                    <div class="scheme-card-img" style="background-image: url('./Images/ssy.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Sukanya Samriddhi Yojana</h3>
+                        <p>Small savings scheme for girl child education and marriage expenses</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>Girl child under 10 years</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>High interest rate & tax benefits</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="ssy">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Employment Schemes -->
+                <div class="scheme-card" data-category="employment">
+                    <div class="scheme-card-img" style="background-image: url('./Images/mgnrega.jpg')"></div>
+                    <div class="scheme-card-content">
+                        <h3>MGNREGA</h3>
+                        <p>Guarantees 100 days of wage employment to rural households</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>Adult members of rural families</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Guaranteed employment & wages</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="mgnrega">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Additional Schemes -->
+                <div class="scheme-card" data-category="women employment">
+                    <div class="scheme-card-img" style="background-image: url('./Images/ddu.jpg')"></div>
+                    <div class="scheme-card-content">
+                        <h3>Deen Dayal Upadhyaya Grameen Kaushalya Yojana</h3>
+                        <p>Skill development training for rural youth to enhance employment opportunities</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>Rural youth 15-35 years</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Free training and placement</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="ddugky">View Details</button>
+                    </div>
+                </div>
+                
+                <div class="scheme-card" data-category="agriculture">
+                    <div class="scheme-card-img" style="background-image: url('./Images/pmksy1.png')"></div>
+                    <div class="scheme-card-content">
+                        <h3>PM Kisan Samman Nidhi</h3>
+                        <p>Income support scheme providing ₹6,000 per year to farmers</p>
+                        <div class="scheme-details">
+                            <div class="scheme-detail">
+                                <strong>Eligibility:</strong>
+                                <span>All landholding farmers</span>
+                            </div>
+                            <div class="scheme-detail">
+                                <strong>Benefits:</strong>
+                                <span>Direct income support</span>
+                            </div>
+                        </div>
+                        <button class="btn view-scheme" data-scheme="pmkisan">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Application Process Section -->
+    <section class="process-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Application Process</h2>
+            </div>
+            
+            <div class="process-container">
+                <div class="process-line"></div>
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Check Eligibility</h4>
+                            <p>Review the eligibility criteria for your desired scheme to ensure you qualify for the benefits.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Prepare Documents</h4>
+                            <p>Gather all required documents such as identity proof, address proof, income certificate, and any scheme-specific requirements.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Submit Application</h4>
+                            <p>Visit the Navapur Panchayat Samiti office or use the online portal to submit your application form along with all necessary documents.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Application Verification</h4>
+                            <p>Your application will be verified by the concerned authorities. This may include field visits or additional document checks.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Approval & Benefits</h4>
+                            <p>Once approved, you will receive notification and the benefits will be provided as per the scheme guidelines.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">How do I know if I am eligible for a scheme?</div>
+                    <div class="faq-answer">
+                        <p>Each scheme has specific eligibility criteria based on factors such as income level, age, occupation, landholding, etc. You can check the detailed eligibility criteria on our website under each scheme's description or visit our office for assistance.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Where can I apply for government schemes?</div>
+                    <div class="faq-answer">
+                        <p>Applications can be submitted online through government portals, at local municipal offices, panchayat offices, Common Service Centers (CSCs), or relevant department offices depending on the scheme.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How can I check the status of my application?</div>
+                    <div class="faq-answer">
+                        <p>You can track your application status on the official website of the scheme, by visiting the local office where you applied, or through SMS/email updates if the scheme provides them.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How are scheme benefits provided to applicants?</div>
+                    <div class="faq-answer">
+                        <p>Most financial assistance schemes use Direct Benefit Transfer (DBT), where the amount is credited directly to the beneficiary’s bank account. Other benefits, such as subsidies or services, may be provided through government agencies.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">What should I do if my application is rejected?</div>
+                    <div class="faq-answer">
+                        <p>If your application is rejected, check the reason for rejection in the official response. You can reapply after correcting any mistakes or missing documents. If needed, you can visit the concerned government office for clarification.</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-container">
+        <!-- Chat Window -->
+        <div id="chat-window">
+            <div id="chat-header">
+                <h3 id="chat-title">Panchayat Samiti AI Assistant</h3>
+                <select id="language-selector" class="language-select">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="mr">मराठी</option>
+                    <option value="gu">ગુજરાતી</option>
+                </select>
+            </div>
+            <div id="chat-messages" class="messages"></div>
+            <div id="chat-input-container">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Type your message...">
+                <button id="send-button" class="send-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chat Toggle Button -->
+        <div id="chat-toggle-btn">
+            <div id="chat-toggle-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+      <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>About Us</h3>
+        <p>Navapur Panchayat Samiti is dedicated to the development and welfare of rural communities through effective implementation of government schemes and services.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">Schemes</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Information</h3>
+        <div class="contact-details">
+          <div class="contact-item">
+            <span>📍</span>
+            <address>Panchayat Samiti Office, Main Road, Navapur - 425418, Maharashtra</address>
+          </div>
+          <div class="contact-item">
+            <span>📞</span>
+            <a href="tel:+919876543210">+91 9876543210</a>
+          </div>
+          <div class="contact-item">
+            <span>✉️</span>
+            <a href="mailto:info@navapurpanchayat.gov.in">info@navapurpanchayat.gov.in</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Find Us</h3>
+        <div class="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119981.57869774485!2d73.6804752!3d20.9526215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddeeda3d8b13af%3A0x41fcace065976cd0!2sNavapur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1616501323220!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-footer">
+      <p>&copy; 2025 Navapur Panchayat Samiti. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+</body>
+
+<script>
+     // Gemini API Configuration
+     const GEMINI_API_KEY = 'AIzaSyAj9NCp0-9909MPLfds93gsO_gANOITjQQ';
+     const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+     // DOM Elements
+     const chatToggleBtn = document.getElementById('chat-toggle-btn');
+     const chatWindow = document.getElementById('chat-window');
+     const chatInput = document.getElementById('chat-input');
+     const sendButton = document.getElementById('send-button');
+     const messagesContainer = document.getElementById('chat-messages');
+     const languageSelect = document.getElementById('language-selector');
+
+     // Medical context prompt to ensure responses stay within domain
+     const PANCHAYAT_CONTEXT = `You are Panchayat Samiti of Navapur AI, an AI assistant designed to provide general information of the panchayat Samiti and government schemes and info of the services provided in multiple Indian languages. 
+     Follow these guidelines:
+     - Provide helpful, accurate information based on knowledge available
+     - DO NOT answer questions that are irrelevant - politely redirect to relevant topics
+     - When uncertain, acknowledge limitations and suggest consultation with official sources that is people working in the panchayat office`;
+
+     // Active language (default: English)
+     let activeLanguage = 'en';
+
+     // Initialize the chat
+     function initChat() {
+         // Toggle chat window visibility
+         chatToggleBtn.addEventListener('click', () => {
+             chatWindow.classList.toggle('active');
+             if (chatWindow.classList.contains('active')) {
+                 chatInput.focus();
+                 // If this is first open, show welcome message
+                 if (messagesContainer.childElementCount === 0) {
+                     addBotMessage("Welcome to Panchayat Samiti of Navapur AI assistant. How can I help you today?");
+                 }
+             }
+         });
+
+         // Language selection event
+         languageSelect.addEventListener('change', (e) => {
+             activeLanguage = e.target.value;
+             // Add a system message about language change
+             addBotMessage(`I've switched to ${getLanguageName(activeLanguage)}. How can I help you?`);
+         });
+
+         // Send message events
+         sendButton.addEventListener('click', handleSendMessage);
+         chatInput.addEventListener('keypress', (e) => {
+             if (e.key === 'Enter') {
+                 handleSendMessage();
+             }
+         });
+     }
+
+     // Maps language codes to full names
+     function getLanguageName(code) {
+         const languages = {
+             'en': 'English'
+         };
+         return languages[code] || 'English';
+     }
+
+     // Handle sending a message
+     function handleSendMessage() {
+         const message = chatInput.value.trim();
+         if (message.length === 0) return;
+         
+         // Add user message to chat
+         addUserMessage(message);
+         
+         // Clear input field
+         chatInput.value = '';
+         
+         // Show typing indicator
+         showTypingIndicator();
+         
+         // Get response from AI
+         getAIResponse(message);
+     }
+
+     // Add a user message to the chat
+     function addUserMessage(message) {
+         const messageElement = document.createElement('div');
+         messageElement.classList.add('message', 'user-message');
+         messageElement.textContent = message;
+         messagesContainer.appendChild(messageElement);
+         scrollToBottom();
+     }
+
+     // Add a bot message to the chat
+     function addBotMessage(message) {
+         const messageElement = document.createElement('div');
+         messageElement.classList.add('message', 'bot-message');
+         messageElement.textContent = message;
+         messagesContainer.appendChild(messageElement);
+         scrollToBottom();
+     }
+
+     // Show typing indicator
+     function showTypingIndicator() {
+         const typingElement = document.createElement('div');
+         typingElement.classList.add('message', 'bot-message', 'typing-indicator');
+         typingElement.innerHTML = '<span></span><span></span><span></span>';
+         typingElement.id = 'typing-indicator';
+         messagesContainer.appendChild(typingElement);
+         scrollToBottom();
+     }
+
+     // Remove typing indicator
+     function removeTypingIndicator() {
+         const typingElement = document.getElementById('typing-indicator');
+         if (typingElement) {
+             typingElement.remove();
+         }
+     }
+
+     // Scroll chat to bottom
+     function scrollToBottom() {
+         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+     }
+
+     // Get AI response from Gemini API
+     async function getAIResponse(userMessage) {
+         try {
+             // Create prompt based on active language
+             let languageInstruction = '';
+             if (activeLanguage !== 'en') {
+                 languageInstruction = `Please respond in ${getLanguageName(activeLanguage)}.`;
+             }
+
+             const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify({
+                     contents: [{
+                         parts: [{
+                             text: `${PANCHAYAT_CONTEXT}\n\n${languageInstruction}\n\nUser query: ${userMessage}`
+                         }]
+                     }]
+                 })
+             });
+
+             const data = await response.json();
+             
+             // Remove typing indicator
+             removeTypingIndicator();
+             
+             if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                 const aiResponse = data.candidates[0].content.parts[0].text;
+                 addBotMessage(aiResponse);
+             } else {
+                 // Handle API error
+                 addBotMessage("I'm having trouble connecting right now. Please try again later.");
+                 console.error("API Response Error:", data);
+             }
+         } catch (error) {
+             // Remove typing indicator
+             removeTypingIndicator();
+             
+             // Handle error
+             addBotMessage("I'm having trouble connecting right now. Please try again later.");
+             console.error("API Error:", error);
+         }
+     }
+
+     // Initialize chat when DOM is loaded
+     document.addEventListener('DOMContentLoaded', initChat);
+
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('nav ul');
+        
+        menuToggle.addEventListener('click', () => {
+          navMenu.classList.toggle('active');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('nav') && !e.target.closest('.menu-toggle')) {
+            navMenu.classList.remove('active');
+          }
+        });
+    // Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+
+
+    // Filter Buttons Functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const schemeCards = document.querySelectorAll('.scheme-card');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            
+            schemeCards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const categories = card.getAttribute('data-category').split(' ');
+                    if (categories.includes(filter)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        });
+    });
+
+    // FAQ Accordion Functionality
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', function() {
+            // Toggle active class on the clicked item
+            item.classList.toggle('active');
+            
+            // Close other FAQ items
+            faqItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                }
+            });
+        });
+    });
+
+    // Modal Functionality for Scheme Details
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h3 id="modal-title">Scheme Title</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h4>Description</h4>
+                    <p id="modal-description"></p>
+                </div>
+                <div class="modal-section">
+                    <h4>Eligibility Criteria</h4>
+                    <p id="modal-eligibility"></p>
+                </div>
+                <div class="modal-section">
+                    <h4>Benefits</h4>
+                    <p id="modal-benefits"></p>
+                </div>
+                <div class="modal-section">
+                    <h4>Required Documents</h4>
+                    <ul id="modal-documents" class="doc-list"></ul>
+                </div>
+                <div class="modal-section">
+                    <h4>How to Apply</h4>
+                    <p id="modal-apply"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="modal-download" class="btn">Download Form</a>
+                <a href="#" id="modal-apply-online" class="btn">Apply Online</a>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    //For applying css to the js class
+    const modalStyles = document.createElement('style');
+    modalStyles.innerHTML = `
+    .modal-header {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        }
+`;
+document.head.appendChild(modalStyles);
+
+    const closeBtn = modal.querySelector('.close-btn');
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Scheme Details Data
+    const schemeDetails = {
+        pmksy: {
+            title: "Pradhan Mantri Krishi Sinchai Yojana",
+            description: "The Pradhan Mantri Krishi Sinchai Yojana (PMKSY) aims to improve farm water use efficiency to reduce wastage and increase availability both in duration and extent. The scheme focuses on creating sources for assured irrigation and protecting water resources by integrating water sources, distribution and efficient use.",
+            eligibility: "Small and marginal farmers with landholding up to 2 hectares are given priority. All farmers are eligible but preference is given to SC/ST farmers, small & marginal farmers, and women farmers.",
+            benefits: "Financial assistance for micro-irrigation systems like drip and sprinkler irrigation, up to 55% subsidy for small & marginal farmers and 45% for other farmers. Additional benefits include water conservation structures and watershed development activities.",
+            documents: [
+                "Land ownership documents",
+                "Bank account details",
+                "Aadhaar Card",
+                "Caste certificate (if applicable)",
+                "Passport size photographs",
+                "Mobile number linked with Aadhaar"
+            ],
+            apply: "Applications can be submitted at the local Agriculture Department office or through the online portal. Field verification will be conducted before approval, and installation must be done through empaneled vendors."
+        },
+        shc: {
+            title: "Soil Health Card Scheme",
+            description: "The Soil Health Card (SHC) scheme provides a report on soil fertility status and recommends appropriate dosage of nutrients to improve soil health and fertility. The scheme aims to promote integrated nutrient management for sustainable farming.",
+            eligibility: "All farmers owning or cultivating land are eligible for this scheme.",
+            benefits: "Free soil testing once in 3 years, personalized recommendations for nutrient management, improved crop productivity, and reduced cost of cultivation by promoting balanced use of fertilizers.",
+            documents: [
+                "Land records/documents",
+                "Farmer's identity proof",
+                "Address proof",
+                "Bank account details",
+                "Contact details"
+            ],
+            apply: "Visit the nearest Soil Testing Laboratory or approach the Agriculture Officer in your Panchayat. Soil samples will be collected from your field by agricultural extension officers or you can bring samples yourself."
+        },
+        pmay: {
+            title: "Pradhan Mantri Awaas Yojana - Gramin",
+            description: "The Pradhan Mantri Awaas Yojana (PMAY) is a housing scheme by the Government of India aimed at providing affordable and permanent housing to economically weaker sections, low-income groups, and middle-income groups.",
+            eligibility: ["✔️ Families listed under the Socio-Economic Caste Census (SECC) 2011 as lacking a pucca house.✔️ Households with no adult earning members aged 16-59 years.✔️ Women, SC/ST, OBC, minorities, and differently-abled individuals are given preference.✔️ Must not have received benefits from other central housing schemes.",],
+            benefits: "Financial Assistance for Rural Housing: ₹1.20 lakh in plain areas and ₹1.30 lakh in hilly/difficult areas. Basic Amenities Provided: Includes toilets, LPG connections, electricity, and clean drinking water. Direct Bank Transfer (DBT): The subsidy amount is credited directly to the beneficiary’s bank account. Convergence with Other Schemes: Linked with MGNREGA and Swachh Bharat Mission for additional financial support.",
+            documents: [
+                "Form",
+                "Passport Size Photo",
+                "Resolution of Gram Sevak",
+                "Certificate",
+                "Caste certificate (if applicable)",
+                "Income Certificate",
+                "Consent Letter",
+                "Sample No. 8A",
+                "Gharpatti/Panipatti",
+                "Voting Card",
+                "Ration Card",
+                "Residence Certificate",
+                "Aadhaar Card",
+                "Bank Passbook",
+                "Job Card",
+                "Certificate of Non Government Services"
+            ],
+            apply: "Applications can be submitted at the Gram Panchayat office. The list of eligible beneficiaries is prepared by the Gram Sabha based on SECC-2011 data. After verification, houses are sanctioned."
+        },
+        ray: {
+            title: "Ramai Awaas Yojana",
+            description: "The scheme Ramai Awaas (Gharkul) Scheme for SC & Nav-Buddha (Urban and Rural) is a housing scheme by the Department of Social Justice & Special Assistance of the Government of Maharashtra. The scheme aims to raise the standard of living of the individuals from the Scheduled Caste and Nav-Buddha communities residing in rural & urban areas of Maharashtra.",
+            eligibility: ["✔️ 1. The applicant should have lived for 15 years in Maharashtra.✔️ 2. The applicant's annual income limit is as under - For Rural Area, ₹1,00,000/- per annum. For Municipal Area, ₹1,50,000/- per annum. For Municipal Corporation, ₹2,00,000/- per annum.✔️ 3. Only one person in the family will get the benefit.✔️ 4. The applicant should have his/her own land.✔️ 5. The applicant should not be receiving the benefits of any other housing scheme of the Government."],
+            benefits: "The benefits vary with the area that the beneficiary resides in - Rural Area: ₹ 1,00,000/- (Beneficiary's share is Nil) Municipal Area: ₹ 1,50,000/- (Beneficiary's share is 7.5%) Municipal Corporation: ₹ 2,00,000/- (Beneficiary's share is 10%)",
+            documents: [
+                "Form",
+                "Passport Size Photo",
+                "Resolution of Gram Sevak",
+                "Certificate",
+                "Caste certificate (if applicable)",
+                "Income Certificate",
+                "Consent Letter",
+                "Sample No. 8A",
+                "Gharpatti/Panipatti",
+                "Voting Card",
+                "Ration Card",
+                "Residence Certificate",
+                "Aadhaar Card",
+                "Bank Passbook",
+                "Job Card",
+                "Certificate of Non Government Services",
+                "Photo of beneficiary and jagra with gram sevak"
+            ],
+            apply: "Applications can be submitted at the local Gram Panchayat or Municipal Office. The selection of beneficiaries is based on government surveys and eligibility criteria. After verification of documents, the housing assistance is sanctioned, and funds are directly transferred to the beneficiary’s bank account."
+        },
+        say: {
+            title: "Shabari Awaas Yojana",
+            description: "Shabari Awaas Yojana is a housing scheme by the Maharashtra Government aimed at providing financial assistance for constructing or improving homes for Scheduled Tribe (ST) families living below the poverty line (BPL). The scheme ensures that tribal communities have access to safe and permanent housing.",
+            eligibility: ["✔️ Must belong to the Scheduled Tribe (ST) community.✔️ Must be a resident of Maharashtra.✔️ Should be listed as BPL (Below Poverty Line) or be economically weak.✔️ Should not own a pucca house anywhere in India."],
+            benefits: "Free permanent houses for eligible beneficiaries. Financial assistance for house construction. Land ownership rights for those without land. Basic amenities like water supply and sanitation. Direct Bank Transfer (DBT) for transparency.",
+            documents: [
+                "Form",
+                "Passport Size Photo",
+                "Resolution of Gram Sevak",
+                "Certificate",
+                "Caste certificate (if applicable)",
+                "Income Certificate",
+                "Consent Letter",
+                "Sample No. 8A",
+                "Gharpatti/Panipatti",
+                "Voting Card",
+                "Ration Card",
+                "Residence Certificate",
+                "Aadhaar Card",
+                "Bank Passbook",
+                "Job Card",
+                "Certificate of Non Government Services",
+                "Certificate regarding non-listed name"
+            ],
+            apply: "Applications can be submitted at the local Gram Panchayat or Tribal Development Office. Beneficiaries are selected based on government surveys and eligibility criteria. After document verification, the housing assistance is sanctioned, and funds are directly transferred to the beneficiary’s bank account."
+        },
+        sns: {
+            title: "School Nutrition Scheme",
+            description: "The Mid-Day Meal Scheme (Shaley Poshan Aahar Yojana) provides free cooked meals to students. Launched in 1995, the scheme aims to improve nutrition, increase school enrollment, and reduce dropout rates. Initially, students received free rice, but since 2002, they are served hot, cooked meals in schools. The program supports better health, learning, and social inclusion among children.",
+            eligibility: "✔️ Students from Grades 1 to 8. ✔️ Enrolled in government or government-aided schools. ✔️ Includes partially-aided schools, ashram schools, and Mahatma Phule Education Guarantee",
+            benefits: "The Mid-Day Meal Scheme provides free cooked meals to students, ensuring better nutrition and health. It helps combat malnutrition, encourages higher school attendance, and supports better learning outcomes by reducing classroom hunger. Additionally, the scheme promotes social inclusion by allowing children from different backgrounds to share meals, fostering a sense of equality and unity.",
+            documents: [
+                "Birth Certificate",
+                "Aadhaar Card",
+                "Residence Proof (Ration card, electricity bill, etc.)",
+                "School Admission Certificate",
+                "Caste certificate (if applicable)"
+            ],
+            apply: "The Mid-Day Meal Scheme does not require any separate application process or documentation for students. However, schools may verify basic details during enrollment."
+        },
+        aas: {
+            title: "Attendance Allowance Scheme",
+            description: "The Attendance Allowance Scheme offers monthly financial support to students in government schools who maintain at least 75% attendance, encouraging regular attendance and reducing dropouts.",
+            eligibility: "✔️ Enrolled in a government or government-aided school. ✔️ Minimum 75% attendance every month. ✔️ Belong to economically weaker sections (as per state norms, if applicable). ✔️ Must have valid school ID and attendance records.",
+            benefits: "The Attendance Allowance Scheme provides monthly financial support to students studying in government or government-aided schools who maintain at least 75% attendance. The allowance amount may vary depending on the student's class and the state government's policy. This scheme aims to encourage regular attendance, reduce dropout rates, and promote a disciplined approach to education. It also supports students from economically weaker sections by helping them manage basic educational expenses, thereby motivating them to continue their studies consistently.",
+            documents: [
+                "Aadhaar Card (Student)",
+                "School ID or Bonafide Certificate",
+                "Attendance Record (Certified by School)",
+                "Bank Account Details (Student or Guardian)",
+                "Income Certificate (if applicable as per state rules)",
+                "Passport-size Photograph"
+            ],
+            apply: "The Attendance Allowance Scheme does not require a separate application; eligible students are identified by schools based on attendance records."
+        },
+        fts: {
+            title: "Free Textbook Scheme",
+            description: "The Free Textbook Scheme provides free textbooks to Class 1 to 8 students in government, semi-government, and private-aided schools, ensuring easy access to learning materials without any application process.",
+            eligibility: "✔️ All students from Class 1 to 8 studying in government, semi-government, and private-aided schools.",
+            benefits: "Free textbooks provided to Class 1 to 8 students, ensuring access to essential learning materials and reducing educational expenses.",
+            documents: [
+                "No separate documents are required; students are automatically eligible based on school enrollment."
+            ],
+            apply: "No separate application is required; textbooks are distributed directly through schools."
+        },
+        aby: {
+            title: "Ayushman Bharat Yojana",
+            description: "Ayushman Bharat Pradhan Mantri Jan Arogya Yojana (AB PM-JAY) is a health insurance scheme providing coverage up to ₹5 lakh per family per year for secondary and tertiary healthcare hospitalizations.",
+            eligibility: "Families identified based on SECC 2011 deprivation criteria. Includes families with only one room with kutcha walls/roof, no adult member, female-headed households with no adult male member, SC/ST households, and manual scavenger families.",
+            benefits: "Cashless and paperless treatment at empaneled hospitals, coverage up to ₹5 lakh per family per year, pre and post-hospitalization expenses covered, no restriction on family size or age, and transportation allowance.",
+            documents: [
+                "Aadhaar Card",
+                "Ration Card",
+                "Any government-issued ID proof",
+                "Passport size photographs",
+                "Mobile number"
+            ],
+            apply: "Visit the nearest Ayushman Bharat Kendra, Common Service Center (CSC), or empaneled hospital with required documents. Verification will be done on the spot, and an Ayushman card will be issued if eligible."
+        },
+        ssy: {
+            title: "Sukanya Samriddhi Yojana",
+            description: "Sukanya Samriddhi Yojana (SSY) is a small savings scheme specifically designed for the girl child. It encourages parents to save for their daughter's education and marriage expenses with tax benefits and high interest rates.",
+            eligibility: "Parents or legal guardians of girl children aged below 10 years. Only one account can be opened for a girl child, with a maximum of two accounts in a family (for two girl children).",
+            benefits: "High interest rate (currently 8.2% p.a., subject to periodic revision), tax benefits under Section 80C of Income Tax Act, partial withdrawal allowed for education after girl turns 18, and maturity after 21 years.",
+            documents: [
+                "Birth certificate of the girl child",
+                "Identity proof of parent/guardian (Aadhaar Card)",
+                "Address proof",
+                "Photographs of parent/guardian and girl child"
+            ],
+            apply: "Visit the nearest post office or authorized banks with required documents and minimum initial deposit of ₹250. Annual minimum deposit of ₹250 and maximum of ₹1.5 lakh is allowed."
+        },
+        mgnrega: {
+            title: "Mahatma Gandhi National Rural Employment Guarantee Act",
+            description: "MGNREGA provides a legal guarantee of 100 days of wage employment in a financial year to every rural household whose adult members volunteer to do unskilled manual work.",
+            eligibility: "Any rural household adult member willing to do unskilled manual labor. Priority is given to SC/ST, women, and persons with disabilities.",
+            benefits: "Guaranteed 100 days of wage employment, unemployment allowance if work not provided within 15 days, wages as per state wage rates (not less than ₹202 per day), work site facilities like shade, drinking water, and first aid.",
+            documents: [
+                "Aadhaar Card",
+                "Job Card application form",
+                "Passport size photographs of all adult family members",
+                "Bank account details"
+            ],
+            apply: "Register with the Gram Panchayat by submitting an application to get a Job Card. Once registered, submit a written application for work to the Gram Panchayat or Ward Member stating when and how long work is needed."
+        },
+        ddugky: {
+            title: "Deen Dayal Upadhyaya Grameen Kaushalya Yojana",
+            description: "DDU-GKY is a placement-linked skill development program for rural youth, focusing on developing their employability and placing them in wage employment.",
+            eligibility: "Rural youth aged 15-35 years from poor families. Age relaxation of 5 years for SC/ST, women, and persons with disabilities. Priority to MGNREGA worker households and women-headed households.",
+            benefits: "Free skill training in various sectors, free boarding and lodging, post-placement support, career counseling, and assured placement with minimum wages.",
+            documents: [
+                "Age proof (Aadhaar Card/Birth Certificate)",
+                "Educational qualification certificates",
+                "BPL certificate/Income certificate",
+                "Caste certificate (if applicable)",
+                "Bank account details",
+                "Passport size photographs"
+            ],
+            apply: "Visit the nearest DDU-GKY training center or contact the District Rural Development Agency (DRDA). Assessment and counseling will be done before enrollment in suitable courses."
+        },
+        pmkisan: {
+            title: "PM Kisan Samman Nidhi",
+            description: "PM-KISAN provides income support to all landholding farmers' families to supplement their financial needs for agricultural inputs, household needs, and other expenses.",
+            eligibility: "All landholding farmer families with cultivable landholding in their names. Institutional landholders and families with members as government employees or income tax payees are excluded.",
+            benefits: "Direct income support of ₹6,000 per year in three equal installments of ₹2,000 each, transferred directly to beneficiaries' bank accounts.",
+            documents: [
+                "Land records (7/12 extract, Khata/Khatauni/Khasra details)",
+                "Aadhaar Card",
+                "Bank account details",
+                "Mobile number",
+                "Passport size photograph"
+            ],
+            apply: "Fill the PM-KISAN registration form at the nearest Common Service Center (CSC) or online through the PM-KISAN portal. Village level functionaries/Patwaris/Revenue officers assist in the registration process."
+        }
+    };
+
+    // Open modal with scheme details
+    const viewSchemeButtons = document.querySelectorAll('.view-scheme');
+    
+    viewSchemeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const schemeId = this.getAttribute('data-scheme');
+            const details = schemeDetails[schemeId];
+            
+            if (details) {
+                // Populate modal with scheme details
+                document.getElementById('modal-title').textContent = details.title;
+                document.getElementById('modal-description').textContent = details.description;
+                document.getElementById('modal-eligibility').textContent = details.eligibility;
+                document.getElementById('modal-benefits').textContent = details.benefits;
+                document.getElementById('modal-apply').textContent = details.apply;
+                
+                // Clear and populate documents list
+                const docList = document.getElementById('modal-documents');
+                docList.innerHTML = '';
+                details.documents.forEach(doc => {
+                    const li = document.createElement('li');
+                    li.textContent = doc;
+                    docList.appendChild(li);
+                });
+                
+                // Show modal
+                modal.style.display = 'block';
+            }
+        });
+    });
+    
+    // Add click event for download and apply buttons in modal
+    document.getElementById('modal-download').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Form download functionality will be implemented soon. Please visit our office to collect the form physically.');
+    });
+    
+    document.getElementById('modal-apply-online').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Online application system is under development. Please visit our office for assistance with your application.');
+    });
+});
+
+    // Google Translate Widget
+    // List of supported languages with correct Google Translate language codes
+    const languages = [
+    { code: 'en', name: 'English', native: 'English' },
+    { code: 'mr', name: 'Marathi', native: 'मराठी' },
+    { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+    { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+    { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+    { code: 'te', name: 'Telugu', native: 'తెలుగు' },
+      { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
+      { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+    ];
+    
+    // DOM elements
+    const translateButton = document.getElementById('translate-button');
+    const translatorModal = document.getElementById('translator-modal');
+    const closeModal = document.getElementById('close-modal');
+    const languageGrid = document.getElementById('language-grid');
+    
+    // Function to initialize Google Translate
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        autoDisplay: false,
+        includedLanguages: languages.map(lang => lang.code).join(',')
+    }, 'google_translate_element');
+    }
+    
+    // Function to load Google Translate script
+    function loadGoogleTranslateScript() {
+    if (!document.getElementById('google-translate-script')) {
+        const script = document.createElement('script');
+        script.id = 'google-translate-script';
+        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        document.body.appendChild(script);
+    }
+    }
+    
+    // Load Google Translate script when page loads
+    document.addEventListener('DOMContentLoaded', loadGoogleTranslateScript);
+    
+    // Function to populate language grid
+    function populateLanguageGrid() {
+    languageGrid.innerHTML = '';
+    
+    const currentLang = getCurrentLanguage() || 'en';
+    
+    languages.forEach(lang => {
+        const isActive = lang.code === currentLang;
+        
+        const langElement = document.createElement('div');
+        langElement.className = `language-option ${isActive ? 'active-language' : ''}`;
+        langElement.setAttribute('data-lang', lang.code);
+        
+        langElement.innerHTML = `
+            <div class="language-name">${lang.name}</div>
+            <div class="language-native">${lang.native}</div>
+        `;
+        
+        langElement.addEventListener('click', () => {
+            changeLanguage(lang.code);
+            closeTranslatorModal();
+        });
+        
+        languageGrid.appendChild(langElement);
+    });
+    }
+    
+    // Function to get current language from Google Translate cookie
+    function getCurrentLanguage() {
+    const match = document.cookie.match(/(^|;)\s*googtrans=([^;]+)/);
+    if (match) {
+        return match[2].split('/')[2];
+    }
+    return localStorage.getItem('selectedLanguage') || null;
+    }
+    
+    // Function to change language
+    function changeLanguage(langCode) {
+    const currentLang = getCurrentLanguage();
+    
+    // If selected language is the same as current language, do nothing
+    if (currentLang === langCode) return;
+    
+    // Store selected language in localStorage
+    localStorage.setItem('selectedLanguage', langCode);
+    
+    // Set the Google Translate cookie for current domain
+    const hostname = window.location.hostname;
+    let cookieDomain = hostname;
+    
+    // If on localhost, domain should be empty
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        cookieDomain = '';
+    }
+    
+    // Set cookies for Google Translate
+    document.cookie = `googtrans=/en/${langCode}; domain=${cookieDomain}; path=/`;
+    document.cookie = `googtrans=/en/${langCode}; path=/`;
+    
+    // Refresh Google Translate widget without unnecessary reloads
+    const translateElement = document.querySelector('.goog-te-combo');
+    if (translateElement) {
+        translateElement.value = langCode;
+        translateElement.dispatchEvent(new Event('change'));
+    }
+    
+    // Only reload if translation was not applied via the dropdown
+    if (!translateElement) {
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    }
+    }
+    
+    // Function to open translator modal
+    function openTranslatorModal() {
+    populateLanguageGrid();
+    translatorModal.style.display = 'block';
+    }
+    
+    // Function to close translator modal
+    function closeTranslatorModal() {
+    translatorModal.style.display = 'none';
+    }
+    
+    // Event listeners
+    translateButton.addEventListener('click', openTranslatorModal);
+    closeModal.addEventListener('click', closeTranslatorModal);
+    
+    // Close modal if clicked outside
+    window.addEventListener('click', (event) => {
+    if (event.target === translatorModal) {
+        closeTranslatorModal();
+    }
+    });
+    
+    // Apply saved language preference when page loads
+    window.addEventListener('load', () => {
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    const currentLang = getCurrentLanguage();
+    
+    // Only change language if it's different from the saved one
+    if (savedLanguage && savedLanguage !== 'en' && savedLanguage !== currentLang) {
+        setTimeout(() => {
+            changeLanguage(savedLanguage);
+        }, 1000);
+    }
+    });
+</script>
+</html>

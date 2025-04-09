@@ -1,0 +1,209 @@
+/* Dark Mode Variables */
+:root {
+  --primary-color: #4CAF50;
+  --secondary-color: #388E3C;
+  --accent-color: #FF9800;
+  --light-color: #F1F8E9;
+  --dark-color: #333333;
+  --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+  /* Light Mode (Default) Variables */
+  --bg-color: #FFFFFF;
+  --text-color: #333333;
+  --card-bg: white;
+  --header-bg: white;
+  --footer-bg: #333333;
+  --footer-text: rgba(255, 255, 255, 0.7);
+  --services-bg: #F1F8E9;
+  --about-bg: #F1F8E9;
+  --team-card-bg: #F1F8E9;
+  --event-card-bg: white;
+  --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #E0E0E0;
+  --card-bg: #1E1E1E;
+  --header-bg: #1E1E1E;
+  --footer-bg: #1E1E1E;
+  --footer-text: rgba(255, 255, 255, 0.8);
+  --services-bg: #1A1A1A;
+  --about-bg: #1A1A1A;
+  --team-card-bg: #1E1E1E;
+  --event-card-bg: #1E1E1E;
+  --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Apply variables to elements */
+body {
+  font-family: var(--font-primary);
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: all 0.3s ease;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* Header Styles */
+header {
+  background-color: var(--header-bg);
+  box-shadow: var(--header-shadow);
+}
+
+/* Apply dark mode to existing elements */
+.nav-container {
+  background-color: var(--header-bg);
+}
+
+nav ul li a {
+  color: var(--text-color);
+}
+
+.logo-text {
+  color: var(--primary-color);
+}
+
+.menu-toggle {
+  color: var(--text-color);
+}
+
+/* Services Section */
+.services {
+  background-color: var(--services-bg);
+}
+
+.service-card {
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  color: var(--text-color);
+}
+
+/* Stats Section */
+.stats {
+  background-color: var(--bg-color);
+}
+
+.stat-title {
+  color: var(--text-color);
+}
+
+/* About Section */
+.about {
+  background-color: var(--about-bg);
+}
+
+.about-content p {
+  color: var(--text-color);
+}
+
+/* Team Preview Section */
+.team-preview {
+  background-color: var(--bg-color);
+}
+
+.team-card {
+  background-color: var(--team-card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+.team-info p {
+  color: var(--text-color);
+}
+
+/* Recent Events Section */
+.recent-events {
+  background-color: var(--about-bg);
+}
+
+.event-card {
+  background-color: var(--event-card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+.event-info p {
+  color: var(--text-color);
+}
+
+/* Footer */
+footer {
+  background-color: var(--footer-bg);
+}
+
+.footer-section p, 
+.footer-section address,
+.contact-item {
+  color: var(--footer-text);
+}
+
+/* Dark mode toggle button */
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  gap: 5px;
+  margin-left: 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.dark-mode-toggle .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Member cards */
+.member-card {
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  color: var(--text-color);
+}
+
+/* Team member cards */
+.team-member {
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  color: var(--text-color);
+}
+
+.contact-info {
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+/* Translator modal */
+.translator-modal {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: var(--card-shadow);
+}
+
+.language-option {
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  color: var(--text-color);
+}
+
+.language-option:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.language-native {
+  color: var(--text-color);
+  opacity: 0.7;
+}

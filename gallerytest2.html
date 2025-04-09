@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navapur Panchayat Samhiti - Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2ecc71;
+            --secondary-green: #27ae60;
+            --light-background: #f0f4f0;
+            --text-color: #2c3e50;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--light-background);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: var(--primary-green);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .navbar-menu li {
+            margin-left: 20px;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .navbar-menu a:hover {
+            color: var(--primary-green);
+        }
+
+        /* Gallery Styles */
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 2rem 5%;
+        }
+
+        .event-card {
+            width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .event-card:hover {
+            transform: scale(1.05);
+        }
+
+        .event-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .event-details {
+            padding: 15px;
+        }
+
+        .event-details h3 {
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        .event-details p {
+            color: var(--text-color);
+        }
+
+        /* Event Details Modal */
+        .event-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 10px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--primary-green);
+        }
+
+        .event-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 1rem 0;
+        }
+
+        .event-slider img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+            }
+
+            .navbar-menu {
+                margin-top: 1rem;
+            }
+
+            .gallery-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .event-card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">Navapur Panchayat Samhiti</div>
+        <ul class="navbar-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Gallery Container -->
+    <div class="gallery-container">
+        <!-- Event 1 -->
+        <div class="event-card" onclick="openEventModal('event1')">
+            <img src="./img.jpg" alt="Rural Development Workshop">
+            <div class="event-details">
+                <h3>Rural Development Workshop</h3>
+                <p>Empowering rural communities through innovative strategies</p>
+            </div>
+        </div>
+
+        <!-- Event 2 -->
+        <div class="event-card" onclick="openEventModal('event2')">
+            <img src="/api/placeholder/300/250" alt="Community Health Camp">
+            <div class="event-details">
+                <h3>Community Health Camp</h3>
+                <p>Providing free health check-ups and medical awareness</p>
+            </div>
+        </div>
+
+        <!-- Event 3 -->
+        <div class="event-card" onclick="openEventModal('event3')">
+            <img src="/api/placeholder/300/250" alt="Agricultural Awareness Program">
+            <div class="event-details">
+                <h3>Agricultural Awareness Program</h3>
+                <p>Promoting sustainable farming techniques</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="event-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEventModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <div class="event-slider" id="eventSlider"></div>
+        </div>
+    </div>
+
+    <script>
+        // Event data
+        const events = {
+            event1: {
+                title: 'Rural Development Workshop',
+                description: 'A comprehensive workshop focusing on rural development strategies and community empowerment initiatives. Participants learned about sustainable agricultural practices, rural infrastructure development, and community-driven progress.',
+                images: [
+                    './img.jpg',
+                    './img.jpg',
+                    './img.jpg',
+                    './img.jpg',
+                    './img.jpg',
+                    './img.jpg'
+                ]
+            },
+            event2: {
+                title: 'Community Health Camp',
+                description: 'Free health check-ups and medical awareness program conducted for local community members. Providing essential healthcare services and health education to improve overall community well-being.',
+                images: [
+                    '/api/placeholder/250/250',
+                    '/api/placeholder/250/250',
+                    '/api/placeholder/250/250'
+                ]
+            },
+            event3: {
+                title: 'Agricultural Awareness Program',
+                description: 'An intensive program to educate farmers about modern, sustainable agricultural techniques, crop management, and innovative farming methods to improve agricultural productivity and income.',
+                images: [
+                    '/api/placeholder/250/250',
+                    '/api/placeholder/250/250',
+                    '/api/placeholder/250/250',
+                    '/api/placeholder/250/250'
+                ]
+            }
+        };
+
+        function openEventModal(eventKey) {
+            const modal = document.getElementById('eventModal');
+            const titleElement = document.getElementById('modalTitle');
+            const descriptionElement = document.getElementById('modalDescription');
+            const sliderElement = document.getElementById('eventSlider');
+
+            const event = events[eventKey];
+
+            // Set title and description
+            titleElement.textContent = event.title;
+            descriptionElement.textContent = event.description;
+
+            // Clear previous images
+            sliderElement.innerHTML = '';
+
+            // Add images to slider
+            event.images.forEach(imageSrc => {
+                const img = document.createElement('img');
+                img.src = imageSrc;
+                img.alt = event.title;
+                sliderElement.appendChild(img);
+            });
+
+            // Show modal
+            modal.style.display = 'block';
+        }
+
+        function closeEventModal() {
+            const modal = document.getElementById('eventModal');
+            modal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('eventModal');
+            if (event.target === modal) {
+                closeEventModal();
+            }
+        });
+    </script>
+</body>
+</html>

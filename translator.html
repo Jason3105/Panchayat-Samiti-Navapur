@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website with Translator</title>
+    <style>
+        /* Basic styling for the navbar and translator */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        
+        .translate-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .translate-btn img {
+            width: 24px;
+            height: 24px;
+            margin-right: 5px;
+        }
+        
+        /* Translator Modal */
+        .translator-modal {
+            display: none;
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 400px;
+            padding: 10px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .language-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .language-option {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .language-option:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .language-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .language-native {
+            color: #666;
+        }
+        
+        .active-language {
+            border: 2px solid #ff4500;
+            background-color: #fff8f6;
+        }
+        
+        /* Hide Google Translate widget */
+        .skiptranslate {
+            display: none !important;
+        }
+        
+        /* Hide Google Translate banner */
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+        
+        body {
+            top: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden Google Translate Element -->
+    <div id="google_translate_element" style="display: none;"></div>
+    
+    <!-- Example Navbar -->
+    <div class="navbar">
+        <div>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <button id="translate-button" class="translate-btn">
+            <img src="https://cdn-icons-png.flaticon.com/512/484/484633.png" alt="Translate">
+            Translate
+        </button>
+    </div>
+    
+    <!-- Translator Modal -->
+    <div id="translator-modal" class="translator-modal">
+        <div class="modal-header">
+            <button id="close-modal" class="close-btn">×</button>
+        </div>
+        <div class="language-grid" id="language-grid">
+            <!-- Language options will be inserted here by JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Example Content -->
+    <div class="content">
+        <h1>Welcome to our Website</h1>
+        <p>This is some sample content that will be translated when you select a language.</p>
+        <p>The translator will convert all text on this page to your selected language.</p>
+        <p>You can navigate to other pages, and the translation will persist.</p>
+    </div>
+
+    <script>
+        // List of supported languages with correct Google Translate language codes
+        const languages = [
+            { code: 'en', name: 'English', native: 'English' },
+            { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+            //{ code: 'or', name: 'Odia', native: 'ଓଡ଼ିଆ' }, // Corrected from 'od' to 'or'
+            //{ code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
+            //{ code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+            { code: 'mr', name: 'Marathi', native: 'मराठी' },
+            //{ code: 'te', name: 'Telugu', native: 'తెలుగు' },
+            //{ code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+            //{ code: 'as', name: 'Assamese', native: 'অসমীয়া' },
+            //{ code: 'bn', name: 'Bengali', native: 'বাংলা' },
+            //{ code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+            //{ code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' }
+        ];
+
+        // DOM elements
+        const translateButton = document.getElementById('translate-button');
+        const translatorModal = document.getElementById('translator-modal');
+        const closeModal = document.getElementById('close-modal');
+        const languageGrid = document.getElementById('language-grid');
+
+        // Function to initialize Google Translate
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false,
+                includedLanguages: languages.map(lang => lang.code).join(',')
+            }, 'google_translate_element');
+        }
+
+        // Function to load Google Translate script
+        function loadGoogleTranslateScript() {
+            if (!document.getElementById('google-translate-script')) {
+                const script = document.createElement('script');
+                script.id = 'google-translate-script';
+                script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                document.body.appendChild(script);
+            }
+        }
+
+        // Load Google Translate script when page loads
+        document.addEventListener('DOMContentLoaded', loadGoogleTranslateScript);
+
+        // Function to populate language grid
+        function populateLanguageGrid() {
+            languageGrid.innerHTML = '';
+            
+            // Get current language from cookie or default to English
+            const currentLang = getCurrentLanguage() || 'en';
+            
+            languages.forEach(lang => {
+                const isActive = lang.code === currentLang;
+                
+                const langElement = document.createElement('div');
+                langElement.className = `language-option ${isActive ? 'active-language' : ''}`;
+                langElement.setAttribute('data-lang', lang.code);
+                
+                langElement.innerHTML = `
+                    <div class="language-name">${lang.name}</div>
+                    <div class="language-native">${lang.native}</div>
+                `;
+                
+                langElement.addEventListener('click', () => {
+                    changeLanguage(lang.code);
+                    closeTranslatorModal();
+                });
+                
+                languageGrid.appendChild(langElement);
+            });
+        }
+
+        // Function to get current language from Google Translate cookie
+        function getCurrentLanguage() {
+            const match = document.cookie.match(/(^|;)\s*googtrans=([^;]+)/);
+            if (match) {
+                return match[2].split('/')[2];
+            }
+            return localStorage.getItem('selectedLanguage') || null;
+        }
+
+        // Function to change language
+        function changeLanguage(langCode) {
+            // Store selected language in localStorage
+            localStorage.setItem('selectedLanguage', langCode);
+            
+            // Set the Google Translate cookie for current domain
+            const hostname = window.location.hostname;
+            let cookieDomain = hostname;
+            
+            // If on localhost, domain should be empty
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                cookieDomain = '';
+            }
+            
+            // Set cookies for Google Translate
+            document.cookie = `googtrans=/en/${langCode}; domain=${cookieDomain}; path=/`;
+            document.cookie = `googtrans=/en/${langCode}; path=/`;
+            
+            // Refresh Google Translate widget
+            if (langCode === 'en') {
+                // If English, clear the translation
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${cookieDomain}; path=/;`;
+                window.location.reload();
+            } else {
+                // Otherwise, trigger translation
+                const translateElement = document.querySelector('.goog-te-combo');
+                if (translateElement) {
+                    translateElement.value = langCode;
+                    translateElement.dispatchEvent(new Event('change'));
+                } else {
+                    // If element doesn't exist yet, reload the page with cookie set
+                    window.location.reload();
+                }
+            }
+        }
+
+        // Function to open translator modal
+        function openTranslatorModal() {
+            populateLanguageGrid();
+            translatorModal.style.display = 'block';
+        }
+
+        // Function to close translator modal
+        function closeTranslatorModal() {
+            translatorModal.style.display = 'none';
+        }
+
+        // Event listeners
+        translateButton.addEventListener('click', openTranslatorModal);
+        closeModal.addEventListener('click', closeTranslatorModal);
+
+        // Close modal if clicked outside
+        window.addEventListener('click', (event) => {
+            if (event.target === translatorModal) {
+                closeTranslatorModal();
+            }
+        });
+
+        // Apply saved language preference when page loads
+        window.addEventListener('load', () => {
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            if (savedLanguage && savedLanguage !== 'en') {
+                // Short delay to ensure Google Translate has loaded
+                setTimeout(() => {
+                    changeLanguage(savedLanguage);
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

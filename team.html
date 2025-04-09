@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team | Navapur Panchayat Samiti</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6fcef;
+            color: #333;
+        }
+        .header {
+            background-color: #003300;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #006600;
+            font-size: 28px;
+        }
+        .team {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .team-member {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 320px;
+            transition: transform 0.3s;
+        }
+        .team-member:hover {
+            transform: scale(1.05);
+        }
+        .team-member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid #006600;
+        }
+        .contact-info {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .btn {
+            background-color: #009900;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #007700;
+        }
+        @media (max-width: 768px) {
+            .team {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Base Styles */
+:root {
+    /* Light Mode Colors */
+    --primary-color: #1B5E20;
+    --accent-color: #FFC107;
+    --background-color: #FAFAFA;
+    --text-color: #333333;
+    --card-bg: #FFFFFF;
+    --border-color: #E0E0E0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --table-header: #e8f5e9;
+    --table-row-even: #f5f5f5;
+    --primary-green: #2e7d32;
+    --light-green: #4caf50;
+    --cream: #f5f5dc;
+    --light-cream: #fafaee;
+    --white: #ffffff;
+    --text-dark: #333333;
+    --text-light: #666666;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Demo Page Styling */
+#page-container {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light-cream);
+  color: var(--text-dark);
+  min-height: 100vh;
+}
+
+/* Chatbot Container */
+#chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Toggle Button */
+#chat-toggle-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px var(--shadow);
+  transition: transform 0.3s ease;
+}
+
+#chat-toggle-btn:hover {
+  transform: scale(1.05);
+}
+
+#chat-toggle-icon {
+  color: var(--white);
+  font-size: 24px;
+}
+
+/* Chat Window */
+#chat-window {
+  width: 350px;
+  height: 500px;
+  background-color: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px var(--shadow);
+  margin-bottom: 15px;
+  display: none;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+#chat-window.active {
+  display: flex;
+}
+
+/* Chat Header */
+#chat-header {
+  background-color: var(--primary-green);
+  color: var(--white);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#chat-title {
+  font-weight: 600;
+  margin: 0;
+  font-size: 16px;
+}
+
+#language-selector {
+  background-color: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+
+#language-selector option {
+  background-color: var(--white);
+  color: var(--text-dark);
+}
+
+/* Chat Messages Area */
+#chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background-color: var(--light-cream);
+}
+
+.message {
+  margin-bottom: 12px;
+  max-width: 80%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  line-height: 1.4;
+  font-size: 14px;
+  position: relative;
+}
+
+.user-message {
+  background-color: var(--light-green);
+  color: var(--white);
+  margin-left: auto;
+  border-bottom-right-radius: 2px;
+}
+
+.bot-message {
+  background-color: var(--cream);
+  color: var(--text-dark);
+  margin-right: auto;
+  border-bottom-left-radius: 2px;
+}
+
+.typing-indicator {
+  padding: 8px 16px;
+}
+
+.typing-indicator span {
+  height: 4px;
+  width: 4px;
+  background-color: var(--text-light);
+  display: inline-block;
+  border-radius: 50%;
+  animation: typingAnimation 1.5s infinite ease-in-out;
+  margin: 0 2px;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingAnimation {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
+/* Input Area */
+#chat-input-container {
+  display: flex;
+  padding: 10px;
+  background-color: var(--white);
+  border-top: 1px solid var(--cream);
+}
+
+#chat-input {
+  flex: 1;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 8px 15px;
+  outline: none;
+  font-size: 14px;
+}
+
+#chat-input:focus {
+  border-color: var(--light-green);
+}
+
+#send-button {
+  background-color: var(--primary-green);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+#send-button:hover {
+  background-color: var(--light-green);
+}
+
+.dark-mode {
+    --primary-color: #2E7D32;
+    --accent-color: #FFC107;
+    --background-color: #121212;
+    --text-color: #F5F5F5;
+    --card-bg: #1E1E1E;
+    --border-color: #333333;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --table-header: #1B5E20;
+    --table-row-even: #2A2A2A;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #388E3C;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;;
+  line-height: 1.6;
+  color: #333333;
+  background-color: #FFFFFF;
+  top: 0 !important;
+}
+
+.governance-structure h3 {
+    margin-bottom: 1.5rem;
+}
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.member-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-10px);
+}
+
+.member-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    background-color: #e0e0e0;
+    background-size: cover;
+    background-position: center;
+}
+
+.president {
+    background-image: url('https://tse1.mm.bing.net/th?id=OIP.1ZcVjr7howAsil6CppO3zwHaHa&w=474&h=474&c=7');
+}
+
+.vice-president {
+    background-image: url('https://tse2.mm.bing.net/th?id=OIP.igYbUjRQhvfaIvykz3GMqAHaEK&w=266&h=266&c=7');
+}
+
+.secretary {
+    background-image: url('https://tse2.mm.bing.net/th?id=OIP.kYQu6R59PdRYdkMHRAz6twHaHa&w=474&h=474&c=7');
+}
+
+.member-card h4 {
+    margin-bottom: 0.5rem;
+}
+
+.member-card p {
+    font-size: 0.9rem;
+}
+
+/* Header Styles */
+header {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .top-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 0;
+  }
+  
+  .top-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .contact-info {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .contact-info a {
+    color: white;
+  }
+  
+  .social-links {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .logo img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4CAF50;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  nav ul li a {
+    color: #333333;
+    font-weight: 500;
+    padding: 10px 0;
+    position: relative;
+  }
+
+  nav ul li a:hover {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  
+  nav ul li a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #4CAF50;
+    transition: width 0.3s;
+  }
+  
+  nav ul li a:hover:after {
+    width: 100%;
+  }
+  
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333333;
+  }
+
+  /* Google Translator Feature */
+  .translate-btn {
+    background-color: transparent;
+    border: none;
+    color: black;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.translate-btn img {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+}
+
+/* Translator Modal */
+.translator-modal {
+    display: none;
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 400px;
+    padding: 10px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.language-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.language-option {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.language-option:hover {
+    background-color: #f9f9f9;
+}
+
+.language-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.language-native {
+    color: #666;
+}
+
+.active-language {
+    border: 2px solid #ff4500;
+    background-color: #fff8f6;
+}
+
+/* Hide Google Translate widget */
+.skiptranslate {
+    display: none !important;
+}
+
+/* Hide Google Translate banner */
+.goog-te-banner-frame {
+    display: none !important;
+}
+    
+    /* Page Banner */
+    .page-banner {
+        background-color: #333;
+        color: white;
+        padding: 40px 0;
+        text-align: center;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/300');
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .page-banner h2 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .page-banner p {
+        max-width: 700px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+    }
+
+     /* Footer */
+     footer {
+        background-color: #333333;
+        color: white;
+        padding: 50px 0 0;
+      }
+      
+      .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      .footer-section {
+        flex: 1 1 250px;
+      }
+      
+      .footer-section h3 {
+        color: #FF9800;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .footer-section p, 
+      .footer-section address {
+        margin-bottom: 15px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .footer-links {
+        list-style: none;
+      }
+      
+      .footer-links li {
+        margin-bottom: 10px;
+      }
+      
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 0.3s;
+      }
+      
+      .footer-links a:hover {
+        color: #FF9800;
+      }
+      
+      .contact-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .map-container {
+        height: 200px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      
+      .bottom-footer {
+        background-color: rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+      }
+        
+        
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      
+      nav ul {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: white;
+        width: 100%;
+        text-align: center;
+        align-items: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+        height: calc(100vh - 70px);
+        overflow-y: auto;
+      }
+      
+      nav ul.active {
+        left: 0;
+      }
+      
+      .contact-info {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .stat-number {
+        font-size: 2rem;
+      }
+      
+      .about-container,
+      .team-container,
+      .events-container {
+        gap: 20px;
+      }
+    }
+
+    a {
+        text-decoration: none;
+    }
+        
+    
+
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="nav-container">
+          <div class="logo">
+            <img src="/api/placeholder/50/50" alt="Navapur Panchayat Logo">
+            <div class="logo-text">Navapur Panchayat Samiti</div>
+          </div>
+          
+          <button class="menu-toggle" aria-label="Toggle menu">
+            ☰
+          </button>
+          
+          <nav>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="schemes.html">Schemes</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="team.html">Our Team</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+              <li><a href="contact.html">Contact Us</a></li>
+              <li>
+                <button id="translate-button" class="translate-btn">
+                  <img src="https://cdn-icons-png.flaticon.com/512/484/484633.png" alt="Translate">
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+    </header>
+
+          <!-- Translator Modal -->
+    <div id="translator-modal" class="translator-modal">
+        <div class="modal-header">
+            <button id="close-modal" class="close-btn">×</button>
+        </div>
+        <div class="language-grid" id="language-grid">
+            <!-- Language options will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Page Banner -->
+    <section class="page-banner">
+        <div class="container">
+            <h2>Our Team</h2>
+            <p>Explore various welfare schemes provided by Navapur Panchayat Samiti to enhance rural development and improve quality of life for all citizens</p>
+        </div>
+        <br>
+        <div class="breadcrumb">
+            <a href="index.html" style="color: orange;">Home</a> &gt; <span>Our Team</span>
+        </div>
+    </section>
+    <div class="container">
+        <h1>Meet Our Team</h1>
+        <p>Dedicated members working towards the development of Navapur.</p>
+
+
+        <div class="governance-structure">
+                    <h3>Governance Structure</h3>
+                    <div class="members-grid">
+                        <div class="member-card">
+                            <div class="member-img president"></div>
+                            <h4>Rajesh Patil</h4>
+                            <p>President</p>
+                            <p>Oversees all Panchayat Samiti activities and chairs meetings</p>
+                            <br>
+                            <p class="contact-info">📧 rajesh.patil@navapur.gov.in</p>
+                            <p class="contact-info">📞 +91 98765 43210</p>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-img vice-president"></div>
+                            <h4>Sunita Deshmukh</h4>
+                            <p>Vice President</p>
+                            <p>Assists the President and acts in their absence</p>
+                            <br>
+                            <p class="contact-info">📧 rajesh.patil@navapur.gov.in</p>
+                            <p class="contact-info">📞 +91 98765 43210</p>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-img secretary"></div>
+                            <h4>Prakash Jadhav</h4>
+                            <p>Secretary</p>
+                            <p>Manages administrative functions and record-keeping</p>
+                            <br>
+                            <p class="contact-info">📧 rajesh.patil@navapur.gov.in</p>
+                            <p class="contact-info">📞 +91 98765 43210</p>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-img president"></div>
+                            <h4>Rajesh Patil</h4>
+                            <p>President</p>
+                            <p>Oversees all Panchayat Samiti activities and chairs meetings</p>
+                            <br>
+                            <p class="contact-info">📧 rajesh.patil@navapur.gov.in</p>
+                            <p class="contact-info">📞 +91 98765 43210</p>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-img vice-president"></div>
+                            <h4>Sunita Deshmukh</h4>
+                            <p>Vice President</p>
+                            <p>Assists the President and acts in their absence</p>
+                            <br>
+                            <p class="contact-info">📧 rajesh.patil@navapur.gov.in</p>
+                            <p class="contact-info">📞 +91 98765 43210</p>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-img secretary"></div>
+                            <h4>Prakash Jadhav</h4>
+                            <p>Secretary</p>
+                            <p>Manages administrative functions and record-keeping</p>
+                            <br>
+                            <p class="contact-info">📧 rajesh.patil@navapur.gov.in</p>
+                            <p class="contact-info">📞 +91 98765 43210</p>
+                        </div>
+                    </div>
+                </div>
+    </div>
+
+              <!-- Chatbot Widget -->
+              <div id="chatbot-container">
+                <!-- Chat Window -->
+                <div id="chat-window">
+                    <div id="chat-header">
+                        <h3 id="chat-title">Panchayat Samiti AI Assistant</h3>
+                        <select id="language-selector" class="language-select">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="mr">मराठी</option>
+                            <option value="gu">ગુજરાતી</option>
+                        </select>
+                    </div>
+                    <div id="chat-messages" class="messages"></div>
+                    <div id="chat-input-container">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Type your message...">
+                        <button id="send-button" class="send-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Chat Toggle Button -->
+                <div id="chat-toggle-btn">
+                    <div id="chat-toggle-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+         <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>About Us</h3>
+        <p>Navapur Panchayat Samiti is dedicated to the development and welfare of rural communities through effective implementation of government schemes and services.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="schemes.html">Schemes</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="#">Our Team</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Information</h3>
+        <div class="contact-details">
+          <div class="contact-item">
+            <span>📍</span>
+            <address>Panchayat Samiti Office, Main Road, Navapur - 425418, Maharashtra</address>
+          </div>
+          <div class="contact-item">
+            <span>📞</span>
+            <a href="tel:+919876543210">+91 9876543210</a>
+          </div>
+          <div class="contact-item">
+            <span>✉️</span>
+            <a href="mailto:info@navapurpanchayat.gov.in">info@navapurpanchayat.gov.in</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Find Us</h3>
+        <div class="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119981.57869774485!2d73.6804752!3d20.9526215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddeeda3d8b13af%3A0x41fcace065976cd0!2sNavapur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1616501323220!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-footer">
+      <p>&copy; 2025 Navapur Panchayat Samiti. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+     // Gemini API Configuration
+     const GEMINI_API_KEY = 'AIzaSyAj9NCp0-9909MPLfds93gsO_gANOITjQQ';
+     const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+     // DOM Elements
+     const chatToggleBtn = document.getElementById('chat-toggle-btn');
+     const chatWindow = document.getElementById('chat-window');
+     const chatInput = document.getElementById('chat-input');
+     const sendButton = document.getElementById('send-button');
+     const messagesContainer = document.getElementById('chat-messages');
+     const languageSelect = document.getElementById('language-selector');
+
+     // Medical context prompt to ensure responses stay within domain
+     const PANCHAYAT_CONTEXT = `You are Panchayat Samiti of Navapur AI, an AI assistant designed to provide general information of the panchayat Samiti and government schemes and info of the services provided in multiple Indian languages. 
+     Follow these guidelines:
+     - Provide helpful, accurate information based on knowledge available
+     - DO NOT answer questions that are irrelevant - politely redirect to relevant topics
+     - When uncertain, acknowledge limitations and suggest consultation with official sources that is people working in the panchayat office`;
+
+     // Active language (default: English)
+     let activeLanguage = 'en';
+
+     // Initialize the chat
+     function initChat() {
+         // Toggle chat window visibility
+         chatToggleBtn.addEventListener('click', () => {
+             chatWindow.classList.toggle('active');
+             if (chatWindow.classList.contains('active')) {
+                 chatInput.focus();
+                 // If this is first open, show welcome message
+                 if (messagesContainer.childElementCount === 0) {
+                     addBotMessage("Welcome to Panchayat Samiti of Navapur AI assistant. How can I help you today?");
+                 }
+             }
+         });
+
+         // Language selection event
+         languageSelect.addEventListener('change', (e) => {
+             activeLanguage = e.target.value;
+             // Add a system message about language change
+             addBotMessage(`I've switched to ${getLanguageName(activeLanguage)}. How can I help you?`);
+         });
+
+         // Send message events
+         sendButton.addEventListener('click', handleSendMessage);
+         chatInput.addEventListener('keypress', (e) => {
+             if (e.key === 'Enter') {
+                 handleSendMessage();
+             }
+         });
+     }
+
+     // Maps language codes to full names
+     function getLanguageName(code) {
+         const languages = {
+             'en': 'English'
+         };
+         return languages[code] || 'English';
+     }
+
+     // Handle sending a message
+     function handleSendMessage() {
+         const message = chatInput.value.trim();
+         if (message.length === 0) return;
+         
+         // Add user message to chat
+         addUserMessage(message);
+         
+         // Clear input field
+         chatInput.value = '';
+         
+         // Show typing indicator
+         showTypingIndicator();
+         
+         // Get response from AI
+         getAIResponse(message);
+     }
+
+     // Add a user message to the chat
+     function addUserMessage(message) {
+         const messageElement = document.createElement('div');
+         messageElement.classList.add('message', 'user-message');
+         messageElement.textContent = message;
+         messagesContainer.appendChild(messageElement);
+         scrollToBottom();
+     }
+
+     // Add a bot message to the chat
+     function addBotMessage(message) {
+         const messageElement = document.createElement('div');
+         messageElement.classList.add('message', 'bot-message');
+         messageElement.textContent = message;
+         messagesContainer.appendChild(messageElement);
+         scrollToBottom();
+     }
+
+     // Show typing indicator
+     function showTypingIndicator() {
+         const typingElement = document.createElement('div');
+         typingElement.classList.add('message', 'bot-message', 'typing-indicator');
+         typingElement.innerHTML = '<span></span><span></span><span></span>';
+         typingElement.id = 'typing-indicator';
+         messagesContainer.appendChild(typingElement);
+         scrollToBottom();
+     }
+
+     // Remove typing indicator
+     function removeTypingIndicator() {
+         const typingElement = document.getElementById('typing-indicator');
+         if (typingElement) {
+             typingElement.remove();
+         }
+     }
+
+     // Scroll chat to bottom
+     function scrollToBottom() {
+         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+     }
+
+     // Get AI response from Gemini API
+     async function getAIResponse(userMessage) {
+         try {
+             // Create prompt based on active language
+             let languageInstruction = '';
+             if (activeLanguage !== 'en') {
+                 languageInstruction = `Please respond in ${getLanguageName(activeLanguage)}.`;
+             }
+
+             const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify({
+                     contents: [{
+                         parts: [{
+                             text: `${PANCHAYAT_CONTEXT}\n\n${languageInstruction}\n\nUser query: ${userMessage}`
+                         }]
+                     }]
+                 })
+             });
+
+             const data = await response.json();
+             
+             // Remove typing indicator
+             removeTypingIndicator();
+             
+             if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                 const aiResponse = data.candidates[0].content.parts[0].text;
+                 addBotMessage(aiResponse);
+             } else {
+                 // Handle API error
+                 addBotMessage("I'm having trouble connecting right now. Please try again later.");
+                 console.error("API Response Error:", data);
+             }
+         } catch (error) {
+             // Remove typing indicator
+             removeTypingIndicator();
+             
+             // Handle error
+             addBotMessage("I'm having trouble connecting right now. Please try again later.");
+             console.error("API Error:", error);
+         }
+     }
+
+     // Initialize chat when DOM is loaded
+     document.addEventListener('DOMContentLoaded', initChat);
+
+            // Mobile Menu Toggle
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('nav ul');
+            
+            menuToggle.addEventListener('click', () => {
+              navMenu.classList.toggle('active');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+              if (!e.target.closest('nav') && !e.target.closest('.menu-toggle')) {
+                navMenu.classList.remove('active');
+              }
+            });
+
+            // Google Translate Widget
+    // List of supported languages with correct Google Translate language codes
+    const languages = [
+    { code: 'en', name: 'English', native: 'English' },
+    { code: 'mr', name: 'Marathi', native: 'मराठी' },
+    { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+    { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+    { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+    { code: 'te', name: 'Telugu', native: 'తెలుగు' },
+      { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
+      { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+    ];
+    
+    // DOM elements
+    const translateButton = document.getElementById('translate-button');
+    const translatorModal = document.getElementById('translator-modal');
+    const closeModal = document.getElementById('close-modal');
+    const languageGrid = document.getElementById('language-grid');
+    
+    // Function to initialize Google Translate
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        autoDisplay: false,
+        includedLanguages: languages.map(lang => lang.code).join(',')
+    }, 'google_translate_element');
+    }
+    
+    // Function to load Google Translate script
+    function loadGoogleTranslateScript() {
+    if (!document.getElementById('google-translate-script')) {
+        const script = document.createElement('script');
+        script.id = 'google-translate-script';
+        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        document.body.appendChild(script);
+    }
+    }
+    
+    // Load Google Translate script when page loads
+    document.addEventListener('DOMContentLoaded', loadGoogleTranslateScript);
+    
+    // Function to populate language grid
+    function populateLanguageGrid() {
+    languageGrid.innerHTML = '';
+    
+    const currentLang = getCurrentLanguage() || 'en';
+    
+    languages.forEach(lang => {
+        const isActive = lang.code === currentLang;
+        
+        const langElement = document.createElement('div');
+        langElement.className = `language-option ${isActive ? 'active-language' : ''}`;
+        langElement.setAttribute('data-lang', lang.code);
+        
+        langElement.innerHTML = `
+            <div class="language-name">${lang.name}</div>
+            <div class="language-native">${lang.native}</div>
+        `;
+        
+        langElement.addEventListener('click', () => {
+            changeLanguage(lang.code);
+            closeTranslatorModal();
+        });
+        
+        languageGrid.appendChild(langElement);
+    });
+    }
+    
+    // Function to get current language from Google Translate cookie
+    function getCurrentLanguage() {
+    const match = document.cookie.match(/(^|;)\s*googtrans=([^;]+)/);
+    if (match) {
+        return match[2].split('/')[2];
+    }
+    return localStorage.getItem('selectedLanguage') || null;
+    }
+    
+    // Function to change language
+    function changeLanguage(langCode) {
+    const currentLang = getCurrentLanguage();
+    
+    // If selected language is the same as current language, do nothing
+    if (currentLang === langCode) return;
+    
+    // Store selected language in localStorage
+    localStorage.setItem('selectedLanguage', langCode);
+    
+    // Set the Google Translate cookie for current domain
+    const hostname = window.location.hostname;
+    let cookieDomain = hostname;
+    
+    // If on localhost, domain should be empty
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        cookieDomain = '';
+    }
+    
+    // Set cookies for Google Translate
+    document.cookie = `googtrans=/en/${langCode}; domain=${cookieDomain}; path=/`;
+    document.cookie = `googtrans=/en/${langCode}; path=/`;
+    
+    // Refresh Google Translate widget without unnecessary reloads
+    const translateElement = document.querySelector('.goog-te-combo');
+    if (translateElement) {
+        translateElement.value = langCode;
+        translateElement.dispatchEvent(new Event('change'));
+    }
+    
+    // Only reload if translation was not applied via the dropdown
+    if (!translateElement) {
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    }
+    }
+    
+    // Function to open translator modal
+    function openTranslatorModal() {
+    populateLanguageGrid();
+    translatorModal.style.display = 'block';
+    }
+    
+    // Function to close translator modal
+    function closeTranslatorModal() {
+    translatorModal.style.display = 'none';
+    }
+    
+    // Event listeners
+    translateButton.addEventListener('click', openTranslatorModal);
+    closeModal.addEventListener('click', closeTranslatorModal);
+    
+    // Close modal if clicked outside
+    window.addEventListener('click', (event) => {
+    if (event.target === translatorModal) {
+        closeTranslatorModal();
+    }
+    });
+    
+    // Apply saved language preference when page loads
+    window.addEventListener('load', () => {
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    const currentLang = getCurrentLanguage();
+    
+    // Only change language if it's different from the saved one
+    if (savedLanguage && savedLanguage !== 'en' && savedLanguage !== currentLang) {
+        setTimeout(() => {
+            changeLanguage(savedLanguage);
+        }, 1000);
+    }
+    });
+  </script>
+</body>
+</html>
